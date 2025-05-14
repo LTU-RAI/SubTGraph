@@ -1,1 +1,1 @@
-# rai-subtbot
+# SubTBot: Automated Subterranean World Generator
