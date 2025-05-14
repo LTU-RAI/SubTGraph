@@ -1,0 +1,60 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+###
+
+def north(node):    return (node[0]-1, node[1])
+def south(node):    return (node[0]+1, node[1])
+def west(node):     return (node[0], node[1]-1)
+def east(node):     return (node[0], node[1]+1)
+
+def valid_node(node, size_of_grid):
+    """Checks if node is within the grid boundaries."""
+    return not (node[0] < 0 or node[0] >= size_of_grid) and not (node[1] < 0 or node[1] >= size_of_grid)
+
+def dijkstra(initial_node, desired_node, grid_size):
+    """Dijkstras algorithm for finding the shortest path between two nodes in a graph.
+
+    Args:
+        initial_node (list): [row,col] coordinates of the initial node
+        desired_node (list): [row,col] coordinates of the desired node
+
+    Returns:
+        list[list]: list of list of nodes that form the shortest path
+    """
+
+    path = [initial_node]
+
+    directions = [north, south, west, east]
+    directionsdx = np.linspace(start=0, stop=len(directions), endpoint=False, dtype=np.uint16)
+
+    visited = np.zeros([grid_size, grid_size])
+    visited[initial_node[0], initial_node[1]] = 1
+
+    distance_grid = np.zeros([grid_size, grid_size])
+    for idx in range(0, grid_size):
+        for jdx in range(0, grid_size):
+            distance_grid[idx][jdx] = max(abs(desired_node[0] - idx), abs(desired_node[1] - jdx))
+    distance_grid[initial_node[0], initial_node[1]] = np.inf
+
+    current_node = [initial_node[0], initial_node[1]]
+    while True:
+        distance = 0
+        best_potential_node = current_node
+        np.random.shuffle(directionsdx)
+        for directiondx in directionsdx:
+            direction = directions[directiondx]
+            potential_node = direction(current_node)
+
+            if valid_node(potential_node, grid_size):
+                if not visited[potential_node[0], potential_node[1]]:
+                    if distance_grid[potential_node[0],potential_node[1]] <= distance_grid[best_potential_node[0], best_potential_node[1]]:
+                        best_potential_node = potential_node 
+
+        visited[best_potential_node[0], best_potential_node[1]] = 1
+        current_node = [best_potential_node[0], best_potential_node[1]]
+        path.append(current_node)
+
+        if current_node[0] == desired_node[0] and current_node[1]==desired_node[1]:  break
+
+    return distance_grid, visited, path
