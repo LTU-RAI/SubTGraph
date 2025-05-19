@@ -224,7 +224,7 @@ std::string WorldTopStr(const std::string &_worldType, std::string outputFile, s
   }
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 void TunnelTileRotations(const std::string &_tileName, math::Vector3d &_pt, math::Quaterniond &_rot)
 {
   if (_tileName.find("Bend") != std::string::npos)

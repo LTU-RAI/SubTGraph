@@ -244,7 +244,7 @@ void WorldGenerator::SetMinTileCount(int _tileCount)
   this->minTileCount = _tileCount;
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 void WorldGenerator::LoadTiles()
 {
   // filter tiles
@@ -365,7 +365,7 @@ void WorldGenerator::LoadTiles()
   }
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 WorldSection WorldGenerator::SelectWorldSection(TileType &_tileType)
 {
   int r = rand() % this->worldSections.size();

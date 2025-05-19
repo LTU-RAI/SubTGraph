@@ -63,7 +63,7 @@ class CaveGeneratorDebug : CaveGeneratorBase, public WorldGeneratorDebug
 };
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 std::vector<WorldSection> CaveGeneratorBase::CreateTypeAWorldSections()
 {
   std::vector<WorldSection> worldSections;
@@ -349,7 +349,7 @@ std::vector<WorldSection> CaveGeneratorBase::CreateTypeAWorldSections()
   return worldSections;
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 std::vector<WorldSection> CaveGeneratorBase::CreateTypeBWorldSections(std::map<std::string, std::vector<ignition::math::Vector3d>>
       &_tileConnectionPoints)
 {
@@ -532,7 +532,7 @@ void CaveGenerator::AdjustOpeningTileType(WorldSection &_s, ConnectionOpening &_
   }
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 void CaveGenerator::LoadTiles()
 {
   WorldGenerator::LoadTiles();
@@ -551,7 +551,7 @@ void CaveGenerator::LoadTiles()
   }
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 WorldSection CaveGenerator::SelectWorldSection(TileType &_tileType)
 {
   if (this->subWorldType == CAVE_ANASTOMOTIC)
@@ -595,7 +595,7 @@ bool CaveGenerator::CorrectTransitionWorldPose(WorldSection &_s, TileType &_tile
   return false;
 }
 
-//////////////////////////////////////////////////
+//////////////////////////////////////////////////  IMPORTANT
 void CaveGenerator::Generate()
 {
   this->LoadTiles();
