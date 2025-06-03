@@ -1,0 +1,47 @@
+# ****************************************************************************************************************
+# Spatial description of the environment
+
+generation_folder: '~/rai-subtgraph/data/'
+generation_n_worlds: 1
+
+generation_seed: 13
+
+connection_avg_width: 300
+
+world_max_length: 1000              # In meters
+world_topology: 'lavatube'          # operational, natural, lavatube
+world_mission_navigation: 'mixed'   # ground, uav, mixed
+
+world_n_levels: 3
+world_n_nodes_per_level: 5
+
+world_n_loops_per_level: 0
+world_n_tjunctions_per_level: 2
+world_n_intersections_per_level: 0
+
+
+# ****************************************************************************************************************
+# Repository paths
+
+# minibla
+asset_path: '~/rai-subtgraph/assets/models/'
+
+# minibla
+darpa_dimensions_type_a: '~/rai-subtgraph/config/dimensions-type-a.yaml'
+darpa_dimensions_type_b: '~/rai-subtgraph/config/dimensions-type-b.yaml'
+
+
+# ****************************************************************************************************************
+# Node names and descriptions
+
+env_node_list:  # minibla
+  node_o1: 'node,1,'
+  node_o2: 'node,2,'
+  node_o3: 'node,3,'
+  node_o4: 'node,4,'
+
+env_connection_list:   # minibla
+  corner:       'corner,e,s'
+  straight:     'straight,e,w'
+  junction:     'junction,e,n,s'
+  intersection: 'intersection,e,n,s,w'

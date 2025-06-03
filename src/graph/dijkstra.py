@@ -3,29 +3,20 @@ import matplotlib.pyplot as plt
 
 ###
 
-def north(node):    return (node[0]-1, node[1])
-def south(node):    return (node[0]+1, node[1])
-def west(node):     return (node[0], node[1]-1)
-def east(node):     return (node[0], node[1]+1)
+getNodeNorth = lambda node: (node[0]-1, node[1])
+getNodeSouth = lambda node: (node[0]+1, node[1])
+getNodeWest  = lambda node: (node[0], node[1]-1)
+getNodeEast  = lambda node: (node[0], node[1]+1)
 
-def valid_node(node, size_of_grid):
-    """Checks if node is within the grid boundaries."""
-    return not (node[0] < 0 or node[0] >= size_of_grid) and not (node[1] < 0 or node[1] >= size_of_grid)
+isValidNode = lambda node, grid_size: not (node[0] < 0 or node[0] >= grid_size) and not (node[1] < 0 or node[1] >= grid_size)
+
+###
 
 def dijkstra(initial_node, desired_node, grid_size):
-    """Dijkstras algorithm for finding the shortest path between two nodes in a graph.
-
-    Args:
-        initial_node (list): [row,col] coordinates of the initial node
-        desired_node (list): [row,col] coordinates of the desired node
-
-    Returns:
-        list[list]: list of list of nodes that form the shortest path
-    """
-
+    
     path = [initial_node]
 
-    directions = [north, south, west, east]
+    directions = [getNodeNorth, getNodeSouth, getNodeWest, getNodeEast]
     directionsdx = np.linspace(start=0, stop=len(directions), endpoint=False, dtype=np.uint16)
 
     visited = np.zeros([grid_size, grid_size])
@@ -39,14 +30,13 @@ def dijkstra(initial_node, desired_node, grid_size):
 
     current_node = [initial_node[0], initial_node[1]]
     while True:
-        distance = 0
         best_potential_node = current_node
         np.random.shuffle(directionsdx)
         for directiondx in directionsdx:
             direction = directions[directiondx]
             potential_node = direction(current_node)
 
-            if valid_node(potential_node, grid_size):
+            if isValidNode(potential_node, grid_size):
                 if not visited[potential_node[0], potential_node[1]]:
                     if distance_grid[potential_node[0],potential_node[1]] <= distance_grid[best_potential_node[0], best_potential_node[1]]:
                         best_potential_node = potential_node 
