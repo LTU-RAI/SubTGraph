@@ -28,7 +28,6 @@ class ConnectionShape:
 
         self.angle = 0
         self.base = ""
-        self.mesh = ""
         self.openings = openings
         self.connection_type = connection_type
 
@@ -39,7 +38,6 @@ class ConnectionShape:
                           "*____________*\n" + \
                           "              \n" + \
                           "              \n"
-            self.mesh = 'straight_o1'
 
         if self.connection_type == "corner":
             self.base =   "              \n" + \
@@ -48,7 +46,6 @@ class ConnectionShape:
                           "     |   ____*\n" + \
                           "     |  |     \n" + \
                           "     |**|     \n"
-            self.mesh = 'corner_o2'
 
         if self.connection_type == "junction": 
             self.base =   "      **      \n" + \
@@ -57,7 +54,6 @@ class ConnectionShape:
                           "     |   ____*\n" + \
                           "     |  |     \n" + \
                           "     |**|     \n"
-            self.mesh = 'junction_o3'
 
         if self.connection_type == "intersection":
             self.base =   "      **      \n" + \
@@ -66,7 +62,6 @@ class ConnectionShape:
                           "*____    ____*\n" + \
                           "     |  |     \n" + \
                           "     |**|     \n"
-            self.mesh = 'intersection_o4'
         
         self.shape = self.base
 
@@ -191,9 +186,39 @@ class NodeShape:
                      "  |___**___|  \n" + \
                      "              \n"
 
-        self.mesh = 'node'
+        self.connection_type = 'node'
         self.shape = self.base
         self.openings = "e,n,s,w".split(',')
+
+    def set_origin_shaft(self):
+        self.connection_type = 'shaft'
+        self.shape = "              \n" + \
+                     "   ___**___   \n" + \
+                     "  |        |  \n" + \
+                     "  *   OS   *  \n" + \
+                     "  |___**___|  \n" + \
+                     "              \n"
+        diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
+        for direction in diff:
+            if direction == "e":   self.shape = east_split(re.split(REGEX, self.shape))
+            if direction == "n":   self.shape = north_split(self.shape.split("**"))
+            if direction == "s":   self.shape = south_split(self.shape.split("**"))
+            if direction == "w":   self.shape = west_split(re.split(REGEX, self.shape))
+
+    def set_destination_shaft(self):
+        self.connection_type = 'shaft_aux'
+        self.shape = "              \n" + \
+                     "   ___**___   \n" + \
+                     "  |        |  \n" + \
+                     "  *   DS   *  \n" + \
+                     "  |___**___|  \n" + \
+                     "              \n"
+        diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
+        for direction in diff:
+            if direction == "e":   self.shape = east_split(re.split(REGEX, self.shape))
+            if direction == "n":   self.shape = north_split(self.shape.split("**"))
+            if direction == "s":   self.shape = south_split(self.shape.split("**"))
+            if direction == "w":   self.shape = west_split(re.split(REGEX, self.shape))
 
     def get_shape(self):
         return self.shape
@@ -208,6 +233,12 @@ class NodeShape:
         if direction == "n":   self.shape = north_split(self.shape.split("**"));        self.openings.remove("n")
         if direction == "s":   self.shape = south_split(self.shape.split("**"));        self.openings.remove("s")
         if direction == "w":   self.shape = west_split(re.split(REGEX, self.shape));    self.openings.remove("w")
+
+        if self.openings.__len__() == 2:  
+            if ((self.openings.__contains__("n") and self.openings.__contains__("s")) or (self.openings.__contains__("e") and self.openings.__contains__("w"))): self.connection_type = "straight"
+            else:  self.connection_type = "corner"
+        if self.openings.__len__() == 1:  self.connection_type = "junction"
+        if self.openings.__len__() == 0:  self.connection_type = "intersection"
 
 
 class EmptyShape:

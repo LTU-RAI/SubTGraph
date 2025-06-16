@@ -1,89 +1,113 @@
-corridor_01_000:
-  # pos: [17.2, 25.1]
-  pos: [12.5, 8.6]
-corridor_01_090:
-  # pos: [25.1, 17.2]
-  pos: [8.6, 12.5]
-corridor_01_270:
-  # pos: [25.1, 17.2]
-  pos: [12.5, 8.6]
+folder: "type_a"
 
-corridor_02_000:
-  # pos: [49.3, 51.3]
-  pos: [12.5, 12.5]
-corridor_02_090:
-  # pos: [51.3, 49.3]
-  pos: [12.5, 12.5]
-corridor_02_180:
-  # pos: [49.3, 51.3]
-  pos: [12.5, 12.5]
-corridor_02_270:
-  # pos: [51.3, 49.3]
-  pos: [12.5, 12.5]
+cave_transition_type_a_to_and_from_type_b:
+  pos: []
+  name: "cavetransition"
 
-corridor_03_000:
-  # pos: [23.8, 25.1]
-  pos: [12.5, 12.5]
-corridor_03_090:
-  # pos: [25.1, 23.8]
-  pos: [12.5, 12.5]
-corridor_03_180:
-  # pos: [23.8, 25.1]
-  pos: [12.5, 12.5]
-corridor_03_270:
-  # pos: [25.1, 23.8]
-  pos: [12.5, 12.5]
+cave_2_way_01_type_a:
+  pos: []
+  name: "2way01"
 
-corridor_04_000:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
+cave_3_way_01_type_a:
+  pos: []
+  name: "3way01"
 
-room_01_000:
-  # pos: [47.6, 56.3]
-  pos: [40.0, 40.0]
-room_01_090:
-  # pos: [56.3, 47.6]
-  pos: [40.0, 40.0]
-room_01_180:
-  # pos: [47.6, 56.3]
-  pos: [40.0, 40.0]
-room_01_270:
-  # pos: [56.3, 47.6]
-  pos: [40.0, 40.0]
+cave_3_way_02_type_a:
+  pos: []
+  name: "3way02"
 
-room_02_corner_000:
-  # pos: [49.3, 51.3]
-  pos: [40.0, 40.0]
-room_02_corner_090:
-  # pos: [51.3, 49.3]
-  pos: [40.0, 40.0]
-room_02_corner_180:
-  # pos: [49.3, 51.3]
-  pos: [40.0, 40.0]
-room_02_corner_270:
-  # pos: [51.3, 49.3]
-  pos: [40.0, 40.0]
+cave_3_way_elevation_01_type_a:
+  pos: []
+  name: "3wayelevation01"
 
-room_02_straight_000:
-  # pos: [49.3, 51.3]
-  pos: [40.0, 40.0]
-room_02_straight_090:
-  # pos: [51.3, 49.3]
-  pos: [40.0, 40.0]
+cave_3_way_elevation_02_type_a:
+  pos: []
+  name: "3wayelevation02"
 
-room_03_000:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
-room_03_090:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
-room_03_180:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
-room_03_270:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
+cave_3_way_elevation_03_type_a:
+  pos: []
+  name: "3wayelevation03"
 
-room_04_000:
-  # pos: [80.4, 80.4]
-  pos: [40.0, 40.0]
+cave_4_way_01_type_a:
+  pos: [130.0, 130.0, 0]
+  name: "4way01"
+
+cave_cap_type_a:
+  pos: [0.0, 0.0, 0.0]
+  name: "cap"
+
+cave_cavern_type_a:
+  pos: [130.0, 130.0, -1.0]
+  name: "cavern"
+
+cave_corner_01_type_a:
+  pos: [130.0, 130.0, 0.0]
+  name: "corner01"
+
+cave_corner_02_type_a:
+  pos: []
+  name: "corner02"
+
+cave_corner_03_type_a:
+  pos: [130.0, 130.0, 0.0]
+  name: "corner03"
+
+cave_corner_04_type_a:
+  pos: []
+  name: "corner04"
+
+cave_elevation_01_type_a:
+  pos: []
+  name: "elevation01"
+
+cave_elevation_02_type_a:
+  pos: []
+  name: "elevation02"
+
+cave_elevation_straight_type_a:
+  pos: []
+  name: "elevationcorner"
+
+cave_elevation_straight_type_a:
+  pos: []
+  name: "elevationstraight01"
+
+cave_split_type_a:
+  pos: [250.0, 250.0, 0.0]
+  name: "split"
+
+cave_straight_shift_type_a:
+  pos: []
+  name: "straightshift"
+
+cave_straight_type_a:
+  pos: [130.0, 130.0, 0.0]
+  name: "straight"
+
+cave_u_turn_01_type_a:
+  pos: []
+  name: "uturn01"
+
+cave_u_turn_elevation_type_a:
+  pos: []
+  name: "uturnelevation"
+
+cave_vertical_shaft_cantilevered_type_a:
+  pos: []
+  name: "verticalshaftcantilevered"
+
+cave_vertical_shaft_dead_end_type_a:
+  pos: []
+  name: "verticalshaftdeadend"
+
+cave_vertical_shaft_straight_bottom_type_a:
+  pos: []
+  name: "verticalshaftstraightbottom"
+
+cave_vertical_shaft_straight_top_type_a:
+  pos: []
+  name: "verticalshaftcantileveredstraighttop"
+
+cave_vertical_shaft_type_a:
+  pos: []
+  name: "verticalshaft"

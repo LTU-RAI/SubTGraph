@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from graph.cost import create_heatmaps
+
 ###
 
 getNodeNorth = lambda node: (node[0]-1, node[1])
@@ -28,6 +30,10 @@ def dijkstra(initial_node, desired_node, grid_size):
             distance_grid[idx][jdx] = max(abs(desired_node[0] - idx), abs(desired_node[1] - jdx))
     distance_grid[initial_node[0], initial_node[1]] = np.inf
 
+    # distance_grid = create_heatmaps((grid_size, grid_size), (initial_node[0], initial_node[1]), [(desired_node[0], desired_node[1])], [])[0][0]
+    # distance_grid[initial_node[0], initial_node[1]] = np.inf
+    # print(distance_grid)
+
     current_node = [initial_node[0], initial_node[1]]
     while True:
         best_potential_node = current_node
@@ -41,6 +47,7 @@ def dijkstra(initial_node, desired_node, grid_size):
                     if distance_grid[potential_node[0],potential_node[1]] <= distance_grid[best_potential_node[0], best_potential_node[1]]:
                         best_potential_node = potential_node 
 
+        # print(current_node)
         visited[best_potential_node[0], best_potential_node[1]] = 1
         current_node = [best_potential_node[0], best_potential_node[1]]
         path.append(current_node)

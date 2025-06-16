@@ -8,9 +8,12 @@ from graph.dijkstra import *
 
 class GridMap():
 
-    def __init__(self):
+    def __init__(self, withShaft=False, level=0):
         self.grid_map =[[""] * grid_columns for _ in range(grid_rows)]
-
+        self.level = level                # Level of the grid map, used for shaft connection
+        self.withShaft = withShaft        # If the grid map has a shaft connection
+        self.originShaftNode = None       # Shaft node position in the grid map
+        self.destinationShaftNode = None  # Destination shaft node position in the grid map
 
     def dijkstra_grid(self, visitation):
 
@@ -44,15 +47,15 @@ class GridMap():
 
                 return boolean
 
-            if isLimitNorthWest(idx, jdx):    return isOpening("e,s".split(','))   and isNotOpening("n,w".split())
-            if isLimitNorthEast(idx, jdx):    return isOpening("s,w".split(','))   and isNotOpening("n,e".split())
-            if isLimitSouthWest(idx, jdx):    return isOpening("e,n".split(','))   and isNotOpening("w,s".split())
-            if isLimitSouthEast(idx, jdx):    return isOpening("n,w".split(','))   and isNotOpening("e,s".split())
+            if isLimitNorthWest(idx, jdx):    return isOpening("e,s".split(','))   and isNotOpening("n,w".split(','))
+            if isLimitNorthEast(idx, jdx):    return isOpening("s,w".split(','))   and isNotOpening("n,e".split(','))
+            if isLimitSouthWest(idx, jdx):    return isOpening("e,n".split(','))   and isNotOpening("w,s".split(','))
+            if isLimitSouthEast(idx, jdx):    return isOpening("n,w".split(','))   and isNotOpening("e,s".split(','))
 
-            if isLimitNorth(idx):             return isOpening("e,s,w".split(',')) and isNotOpening("n".split())
-            if isLimitSouth(idx):             return isOpening("e,n,w".split(',')) and isNotOpening("s".split())
-            if isLimitWest(jdx):              return isOpening("e,n,s".split(',')) and isNotOpening("w".split())
-            if isLimitEast(jdx):              return isOpening("n,s,w".split(',')) and isNotOpening("e".split())
+            if isLimitNorth(idx):             return isOpening("e,s,w".split(',')) and isNotOpening("n".split(','))
+            if isLimitSouth(idx):             return isOpening("e,n,w".split(',')) and isNotOpening("s".split(','))
+            if isLimitWest(jdx):              return isOpening("e,n,s".split(',')) and isNotOpening("w".split(','))
+            if isLimitEast(jdx):              return isOpening("n,s,w".split(',')) and isNotOpening("e".split(','))
 
             return isOpening("e,n,s,w".split(','))  # In the middle of the grid
 
@@ -67,7 +70,6 @@ class GridMap():
 
             self.grid_map[idx][jdx] = connection      # Add connection in grid map
 
-
         for idx in range(grid_rows):
             for jdx in range(grid_columns):
                 
@@ -81,11 +83,30 @@ class GridMap():
                     if isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 1, "e": 0}, operator.ge):  self.grid_map[idx][jdx].opening("w")
                     if isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 0, "e": 1}, operator.ge):  self.grid_map[idx][jdx].opening("e")
 
+                    if self.withShaft:
+                        
+                        if self.originShaftNode is None:  # If shaft enabled, add shaft only once
+                            if self.grid_map[idx][jdx].openings.__len__() == 3: 
+                                self.originShaftNode = [idx, jdx]  # Save shaft node position
+                                self.grid_map[idx][jdx].set_origin_shaft()
+
+                        elif self.destinationShaftNode is None and self.level != 0:  # If shaft enabled, add shaft only once
+                            if self.grid_map[idx][jdx].openings.__len__() == 3: 
+                                self.destinationShaftNode = [idx, jdx]  # Save shaft node position
+                                self.grid_map[idx][jdx].set_destination_shaft()
+
+                    else:  # If shaft not enabled, save first node as shaft node
+
+                        if self.destinationShaftNode is None:  # If shaft enabled, add shaft only once
+                            if self.grid_map[idx][jdx].openings.__len__() == 3: 
+                                self.destinationShaftNode = [idx, jdx]  # Save shaft node position
+                                self.grid_map[idx][jdx].set_destination_shaft()
+
                 else:
-                    corner_params       = topology["env_connection_list"]["corner"].split(',')
-                    straight_params     = topology["env_connection_list"]["straight"].split(',')
-                    junction_params     = topology["env_connection_list"]["junction"].split(',')
-                    intersection_params = topology["env_connection_list"]["intersection"].split(',')
+                    corner_params       = topology["env_asset_list_type_b"]["corner"]["parameters"].split(',')
+                    straight_params     = topology["env_asset_list_type_b"]["straight"]["parameters"].split(',')
+                    junction_params     = topology["env_asset_list_type_b"]["junction"]["parameters"].split(',')
+                    intersection_params = topology["env_asset_list_type_b"]["intersection"]["parameters"].split(',')
 
                     # Straight connection
                     if   isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 1, "e": 1}): populate_connections(idx, jdx, straight_params, angle=0)
