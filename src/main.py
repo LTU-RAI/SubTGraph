@@ -55,10 +55,77 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
     baseOffsetx = 0.0;  baseOffsety = 0.0;  baseOffsetz = 0.0
     mesh_level_array = []
+    mesh_level_direction_array = []
+    mesh_level_offset_array = []
+    mesh_level_rotation_array = []
     for ldx, level in enumerate(level_array):
-        origin = level.originShaftNode if ldx == 0 else level.destinationShaftNode  # Set origin shaft node for first level, destination shaft node for others
-        mergedObj, shaftOffsetx, shaftOffsety, shaftOffsetz = factory_obj.world(level.grid_map, origin, baseOffsetx, baseOffsety, baseOffsetz)  # Create .obj mesh
-        baseOffsetx += shaftOffsetx;  baseOffsety += shaftOffsety;  baseOffsetz += shaftOffsetz
+        mergedObj, shaftOffsetx, shaftOffsety, shaftOffsetz = factory_obj.world(level.grid_map, level.originShaftNode if ldx == 0 else level.destinationShaftNode, baseOffsetx, baseOffsety, baseOffsetz)  # Create .obj mesh
+        baseOffsetx += shaftOffsetx;  baseOffsety += shaftOffsety;  
+        baseOffsetz += shaftOffsetz
+
+        print(shaftOffsetx, shaftOffsety, shaftOffsetz)
+        print(baseOffsetx, baseOffsety, baseOffsetz)
+
+        if ldx == 0:  
+            mesh_level_rotation_array.append(0)
+            mesh_level_direction_array.append(level.grid_map[level.originShaftNode[0]][level.originShaftNode[1]].org_diff)  # First level is always 0 degrees
+
+        else:  # Rotate other levels based on the direction of the shaft
+            org_direction = mesh_level_direction_array[ldx - 1]
+            dst_direction = level.grid_map[level.destinationShaftNode[0]][level.destinationShaftNode[1]].dst_diff
+
+            if ldx < len(level_array) - 1:
+                mesh_level_direction_array.append(level.grid_map[level.originShaftNode[0]][level.originShaftNode[1]].org_diff)
+
+            if mesh_level_rotation_array[ldx - 1] == 90:
+                if org_direction == ['n']:  org_direction = ['e']
+                if org_direction == ['s']:  org_direction = ['w']
+                if org_direction == ['e']:  org_direction = ['s']
+                if org_direction == ['w']:  org_direction = ['n']
+
+            if mesh_level_rotation_array[ldx - 1] == 180:
+                if org_direction == ['n']:  org_direction = ['s']
+                if org_direction == ['s']:  org_direction = ['n']
+                if org_direction == ['e']:  org_direction = ['w']
+                if org_direction == ['w']:  org_direction = ['e']
+
+            if mesh_level_rotation_array[ldx - 1] == 270:
+                if org_direction == ['n']:  org_direction = ['w']
+                if org_direction == ['s']:  org_direction = ['e']  
+                if org_direction == ['e']:  org_direction = ['n']
+                if org_direction == ['w']:  org_direction = ['s'] 
+
+            print(org_direction, dst_direction)
+
+            if dst_direction == ['n']:
+                if   org_direction == ['s']:  mesh_level_rotation_array.append(0)
+                elif org_direction == ['e']:  mesh_level_rotation_array.append(270)
+                elif org_direction == ['w']:  mesh_level_rotation_array.append(90)
+                else:                         mesh_level_rotation_array.append(180)
+
+            if dst_direction == ['s']:
+                if   org_direction == ['n']:  mesh_level_rotation_array.append(0)
+                elif org_direction == ['e']:  mesh_level_rotation_array.append(90)
+                elif org_direction == ['w']:  mesh_level_rotation_array.append(270)
+                else:                         mesh_level_rotation_array.append(180)
+
+            if dst_direction == ['e']:
+                if   org_direction == ['n']:  mesh_level_rotation_array.append(90)
+                elif org_direction == ['s']:  mesh_level_rotation_array.append(270)
+                elif org_direction == ['w']:  mesh_level_rotation_array.append(0)
+                else:                         mesh_level_rotation_array.append(180)
+
+            if dst_direction == ['w']:
+                if   org_direction == ['n']:  mesh_level_rotation_array.append(270)
+                elif org_direction == ['s']:  mesh_level_rotation_array.append(90)
+                elif org_direction == ['e']:  mesh_level_rotation_array.append(0)
+                else:                         mesh_level_rotation_array.append(180)
+
+        print(mesh_level_rotation_array)
+
+        bpy.ops.object.transform_apply(rotation=True)
+        bpy.context.active_object.rotation_euler = (0, 0, math.radians(mesh_level_rotation_array[ldx]))
+        bpy.ops.object.transform_apply(rotation=True)
 
         filename = ''.join(random.choice(string.ascii_letters) for i in range(8))
         bpy.ops.wm.obj_export(filepath=os.path.join('../tmp', filename + '.obj'))
@@ -67,14 +134,9 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete(use_global=False)
 
-    for fdx, filename in enumerate(mesh_level_array):
+    for filename in mesh_level_array:
         bpy.ops.wm.obj_import(filepath=os.path.join('../tmp', filename + '.obj'))
         bpy.context.view_layer.objects.active = bpy.context.selected_objects[0]
-
-        # if fdx > 0:
-        #     bpy.ops.object.transform_apply(rotation=True)
-        #     bpy.context.active_object.rotation_euler = (0, 0, math.radians(180))
-        #     bpy.ops.object.transform_apply(rotation=True)
 
     # Join all imported objects into one
     for obj in bpy.context.selected_objects:

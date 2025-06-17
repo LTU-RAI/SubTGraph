@@ -198,8 +198,8 @@ class NodeShape:
                      "  *   OS   *  \n" + \
                      "  |___**___|  \n" + \
                      "              \n"
-        diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
-        for direction in diff:
+        self.org_diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
+        for direction in self.org_diff:
             if direction == "e":   self.shape = east_split(re.split(REGEX, self.shape))
             if direction == "n":   self.shape = north_split(self.shape.split("**"))
             if direction == "s":   self.shape = south_split(self.shape.split("**"))
@@ -213,8 +213,8 @@ class NodeShape:
                      "  *   DS   *  \n" + \
                      "  |___**___|  \n" + \
                      "              \n"
-        diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
-        for direction in diff:
+        self.dst_diff = list(set(['n', 's', 'e', 'w']) - set(self.openings))
+        for direction in self.dst_diff:
             if direction == "e":   self.shape = east_split(re.split(REGEX, self.shape))
             if direction == "n":   self.shape = north_split(self.shape.split("**"))
             if direction == "s":   self.shape = south_split(self.shape.split("**"))

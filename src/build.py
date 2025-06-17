@@ -147,16 +147,31 @@ class FactoryObj():
 
                 self.imported_objects.append(obj)
 
-        if connection_type.split('_')[0] == "shaft": 
-            self.shaftOffsetx = base_offsetx
-            self.shaftOffsety = base_offsety
-            self.shaftOffsetz = offsetz
-
         for connection in diff:
-            if   connection == 'n':  recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
-            elif connection == 's':  recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
-            elif connection == 'e':  recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
-            elif connection == 'w':  recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
+            if   connection == 'n':  
+                if connection_type.split('_')[0] == "shaft": 
+                    self.shaftOffsetx = base_offsetx
+                    self.shaftOffsety = base_offsety - offsety
+                    self.shaftOffsetz = offsetz
+                recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
+            elif connection == 's':  
+                if connection_type.split('_')[0] == "shaft": 
+                    self.shaftOffsetx = base_offsetx
+                    self.shaftOffsety = base_offsety + offsety
+                    self.shaftOffsetz = offsetz
+                recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
+            elif connection == 'e':  
+                if connection_type.split('_')[0] == "shaft": 
+                    self.shaftOffsetx = base_offsetx + offsetx
+                    self.shaftOffsety = base_offsety
+                    self.shaftOffsetz = offsetz
+                recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
+            elif connection == 'w':  
+                if connection_type.split('_')[0] == "shaft": 
+                    self.shaftOffsetx = base_offsetx - offsetx
+                    self.shaftOffsety = base_offsety
+                    self.shaftOffsetz = offsetz
+                recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
     
     # **************************************************************************************************************
     # Connection Handling
@@ -249,13 +264,13 @@ class FactoryObj():
             if obj.data.materials:  obj.data.materials[0] = material     # Replace the first material slot or you can choose another index
             else:                   obj.data.materials.append(material)  # If no materials, append the material
 
-        # for obj in self.imported_objects:  # Select all imported objects for joining
-        #     obj.select_set(True)
+        for obj in self.imported_objects:  # Select all imported objects for joining
+            obj.select_set(True)
 
-        # bpy.context.view_layer.objects.active = self.imported_objects[0]  # Set active for join
-        # bpy.ops.object.join()
+        bpy.context.view_layer.objects.active = self.imported_objects[0]  # Set active for join
+        bpy.ops.object.join()
 
-        # merged_obj = bpy.context.active_object
-        # merged_obj.name = get_random_id()  # Rename the merged object
+        merged_obj = bpy.context.active_object
+        merged_obj.name = get_random_id()  # Rename the merged object
 
         return self.imported_objects, self.shaftOffsetx, self.shaftOffsety, self.shaftOffsetz
