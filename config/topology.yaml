@@ -8,7 +8,7 @@ generation_seed: 13
 
 connection_avg_width: 300
 
-world_max_length: 100                # In meters
+world_max_length: 100               # In meters
 world_topology: 'lavatube'          # operational, natural, lavatube
 world_mission_navigation: 'mixed'   # ground, uav, mixed
 
@@ -67,7 +67,6 @@ env_asset_list_type_a:
     assets: [
       "cave_4_way_01_type_a",
     ]
-
 
 env_asset_list_type_b:  # minibla  TODO
   node: 

@@ -22,6 +22,21 @@ class FactoryObj():
         elif 'type_b' in dim_type:  return self.dimensions_type_b
         else:                       raise ValueError("Invalid dimensions type specified: {}".format(type))
 
+    def get_material(self, material_name, material_path):
+        material = bpy.data.materials.new(name=material_name)
+        material.use_nodes = True  # Enable node-based materials
+
+        # Create an image texture node
+        nodes = material.node_tree.nodes
+        texture_node = nodes.new(type='ShaderNodeTexImage')
+        texture_node.image = bpy.data.images.load(material_path)  # Path to your image file
+
+        # Connect the texture node to the Principled BSDF shader
+        principled_shader = nodes.get("Principled BSDF")
+        material.node_tree.links.new(texture_node.outputs["Color"], principled_shader.inputs["Base Color"])
+
+        return material
+
     # **************************************************************************************************************
     # Asset Handling
 
@@ -99,7 +114,6 @@ class FactoryObj():
             self.get_connection_idx_jdx(graph, dst_idx, dst_jdx, new_offsetx, new_offsety, dst_connection)
 
         diff = list(set(['n', 's', 'e', 'w']) - set(openings))
-
         if diff.__len__() <= 1 and connection_type != "shaft" and connection_type != "shaft_aux":  # Add cave cap if no openings left
             asset_type = "cave_cap_type_b" if asset_type.split('_')[-1] == 'b' else "cave_cap_type_a"
             dimensions = self.get_dimensions(asset_type)
@@ -133,34 +147,16 @@ class FactoryObj():
 
                 self.imported_objects.append(obj)
 
+        if connection_type.split('_')[0] == "shaft": 
+            self.shaftOffsetx = base_offsetx
+            self.shaftOffsety = base_offsety
+            self.shaftOffsetz = offsetz
+
         for connection in diff:
-            if   connection == 'n':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
-
-            elif connection == 's':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
-
-            elif connection == 'e':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
-
-            elif connection == 'w':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
+            if   connection == 'n':  recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
+            elif connection == 's':  recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
+            elif connection == 'e':  recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
+            elif connection == 'w':  recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
     
     # **************************************************************************************************************
     # Connection Handling
@@ -237,13 +233,29 @@ class FactoryObj():
 
         self.get_node_idx_jdx(graph, origin[0], origin[1], base_offsetx, base_offsety, None)
 
-        for obj in self.imported_objects:  # Select all imported objects for joining
-            obj.select_set(True)
+        materials = {}
+        materials.update({
+            "CaveWall": self.get_material("CaveWall_Albedo", '../assets/textures/CaveWall_Albedo.jpg'),
+            "RockPile": self.get_material("RockPile_Albedo", '../assets/textures/RockPile_Albedo.jpg'),
+            "StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/StriatedRock_Albedo.jpg')
+        })
 
-        bpy.context.view_layer.objects.active = self.imported_objects[0]  # Set active for join
-        bpy.ops.object.join()
+        # 2. List of objects to assign the material to
+        objects_to_assign = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']  # Can filter based on specific criteria
 
-        merged_obj = bpy.context.active_object
-        merged_obj.name = get_random_id()  # Rename the merged object
+        # 3. Assign the material to all objects
+        for obj in objects_to_assign:
+            material = materials.get(obj.name.split('.')[0])
+            if obj.data.materials:  obj.data.materials[0] = material     # Replace the first material slot or you can choose another index
+            else:                   obj.data.materials.append(material)  # If no materials, append the material
 
-        return merged_obj, self.shaftOffsetx, self.shaftOffsety, self.shaftOffsetz
+        # for obj in self.imported_objects:  # Select all imported objects for joining
+        #     obj.select_set(True)
+
+        # bpy.context.view_layer.objects.active = self.imported_objects[0]  # Set active for join
+        # bpy.ops.object.join()
+
+        # merged_obj = bpy.context.active_object
+        # merged_obj.name = get_random_id()  # Rename the merged object
+
+        return self.imported_objects, self.shaftOffsetx, self.shaftOffsety, self.shaftOffsetz
