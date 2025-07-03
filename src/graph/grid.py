@@ -127,10 +127,6 @@ class GridMap():
                     # Intersection connection
                     elif isFeasible(idx, jdx, {"n": 1, "s": 1, "w": 1, "e": 1}): populate_connections(idx, jdx, intersection_params, angle=0)
 
-                    else:   
-                        raise ValueError("Invalid connection configuration at idx: {}, jdx: {} in visitation \n{}".format(idx, jdx, visitation.astype(np.uint8)))
-                    
-
     def __str__(self):
         str_format = "\n\n"
         for idx in range(grid_rows):

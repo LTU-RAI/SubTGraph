@@ -1,57 +1,63 @@
 import numpy as np
-import matplotlib.pyplot as plt
+from utils import *
 
+from scipy.sparse.csgraph import dijkstra
 from graph.cost import create_heatmaps
+from scipy.sparse import csr_matrix
 
 ###
 
-getNodeNorth = lambda node: (node[0]-1, node[1])
-getNodeSouth = lambda node: (node[0]+1, node[1])
-getNodeWest  = lambda node: (node[0], node[1]-1)
-getNodeEast  = lambda node: (node[0], node[1]+1)
+toIndex = lambda row, column: row * grid_columns + column
+toPair  = lambda index: divmod(index, grid_columns)
 
-isValidNode = lambda node, grid_size: not (node[0] < 0 or node[0] >= grid_size) and not (node[1] < 0 or node[1] >= grid_size)
+def extract_path(predecessors, target):
+    path = []
+    i = target
+    while i != -9999:
+        path.append(i)
+        i = predecessors[i]
+    return path[::-1]  # reverse
+
+def cost_adjacency_matrix(cost_grid):
+    rows, cols = cost_grid.shape
+    N = rows * cols
+    adj_matrix = np.zeros((N, N), dtype=np.float32)
+
+    def idx(r, c):
+        return r * cols + c
+
+    for r in range(rows):
+        for c in range(cols):
+            from_idx = idx(r, c)
+
+            neighbors = []
+            if r > 0:           neighbors.append((r - 1, c))  # Up
+            if r < rows - 1:    neighbors.append((r + 1, c))  # Down
+            if c > 0:           neighbors.append((r, c - 1))  # Left
+            if c < cols - 1:    neighbors.append((r, c + 1))  # Right
+
+            for nr, nc in neighbors:
+                to_idx = idx(nr, nc)
+                adj_matrix[from_idx][to_idx] = cost_grid[nr][nc]
+
+    return adj_matrix
 
 ###
 
-def dijkstra(initial_node, desired_node, grid_size):
-    
-    path = [initial_node]
+def dijkstraSolver(initial_node, desired_node, constraints, grid_size):
 
-    directions = [getNodeNorth, getNodeSouth, getNodeWest, getNodeEast]
-    directionsdx = np.linspace(start=0, stop=len(directions), endpoint=False, dtype=np.uint16)
+    cost_grid = create_heatmaps((grid_size, grid_size), (initial_node[0], initial_node[1]), [(desired_node[0], desired_node[1])], constraints)[0][0]
+
+    cost_grid[initial_node[0], initial_node[1]] = np.inf
+    cost_grid = csr_matrix(cost_adjacency_matrix(cost_grid))
+
+    initial_node = toIndex(*initial_node)
+    desired_node = toIndex(*desired_node)
+
+    _, predecessors = dijkstra(csgraph=cost_grid, directed=False, indices=initial_node, return_predecessors=True)
+    path = [toPair(i) for i in extract_path(predecessors, desired_node)]
 
     visited = np.zeros([grid_size, grid_size])
-    visited[initial_node[0], initial_node[1]] = 1
+    for node in path:  visited[node[0], node[1]] = 1
 
-    distance_grid = np.zeros([grid_size, grid_size])
-    for idx in range(0, grid_size):
-        for jdx in range(0, grid_size):
-            distance_grid[idx][jdx] = max(abs(desired_node[0] - idx), abs(desired_node[1] - jdx))
-    distance_grid[initial_node[0], initial_node[1]] = np.inf
-
-    # distance_grid = create_heatmaps((grid_size, grid_size), (initial_node[0], initial_node[1]), [(desired_node[0], desired_node[1])], [])[0][0]
-    # distance_grid[initial_node[0], initial_node[1]] = np.inf
-    # print(distance_grid)
-
-    current_node = [initial_node[0], initial_node[1]]
-    while True:
-        best_potential_node = current_node
-        np.random.shuffle(directionsdx)
-        for directiondx in directionsdx:
-            direction = directions[directiondx]
-            potential_node = direction(current_node)
-
-            if isValidNode(potential_node, grid_size):
-                if not visited[potential_node[0], potential_node[1]]:
-                    if distance_grid[potential_node[0],potential_node[1]] <= distance_grid[best_potential_node[0], best_potential_node[1]]:
-                        best_potential_node = potential_node 
-
-        # print(current_node)
-        visited[best_potential_node[0], best_potential_node[1]] = 1
-        current_node = [best_potential_node[0], best_potential_node[1]]
-        path.append(current_node)
-
-        if current_node[0] == desired_node[0] and current_node[1]==desired_node[1]:  break
-
-    return distance_grid, visited, path
+    return cost_grid, visited, path
