@@ -10,7 +10,7 @@ class FactoryObj():
         self.imported_objects = []
 
         self.base_offsetz = 0.0  # Default base offset for z-axis
-        self.shaftOffsetx, self.shaftOffsety, self.shaftOffsetz = 0.0, 0.0, 0.0  # Default shaft offsets
+        self.shaftOffset= [0.0, 0.0, 0.0]     # Default shaft offsets
 
         with open('../config/dimensions-type-a.yaml', 'r') as file:
             self.dimensions_type_a = yaml.safe_load(file)
@@ -82,9 +82,14 @@ class FactoryObj():
             imported = bpy.context.selected_objects  # Apply rotation and offset
             bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
             for obj in imported:
+                obj["asset_type"] = asset_type
+
                 obj.location.x += base_offsetx
                 obj.location.y += base_offsety
                 obj.location.z = self.base_offsetz
+
+                if connection_type == "shaft":
+                    self.shaftOffset = [obj.location.x, obj.location.y, obj.location.z]
 
                 obj.rotation_euler = (0, 0, math.radians(angle))
                 bpy.ops.object.transform_apply(rotation=True)
@@ -138,6 +143,8 @@ class FactoryObj():
             imported = bpy.context.selected_objects  # Apply rotation and offset
             bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
             for obj in imported:
+                obj["asset_type"] = asset_type
+
                 obj.location.x += new_offsetx
                 obj.location.y += new_offsety
                 obj.location.z = self.base_offsetz
@@ -148,30 +155,10 @@ class FactoryObj():
                 self.imported_objects.append(obj)
 
         for connection in diff:
-            if   connection == 'n':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety - offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
-            elif connection == 's':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx
-                    self.shaftOffsety = base_offsety + offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
-            elif connection == 'e':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx + offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
-            elif connection == 'w':  
-                if connection_type.split('_')[0] == "shaft": 
-                    self.shaftOffsetx = base_offsetx - offsetx
-                    self.shaftOffsety = base_offsety
-                    self.shaftOffsetz = offsetz
-                recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
+            if   connection == 'n':  recursiveConnection(connection, idx, jdx, idx - 1, jdx,     base_offsetx,           base_offsety - offsety, 's')
+            elif connection == 's':  recursiveConnection(connection, idx, jdx, idx + 1, jdx,     base_offsetx,           base_offsety + offsety, 'n')
+            elif connection == 'e':  recursiveConnection(connection, idx, jdx, idx,     jdx + 1, base_offsetx + offsetx, base_offsety,           'w')
+            elif connection == 'w':  recursiveConnection(connection, idx, jdx, idx,     jdx - 1, base_offsetx - offsetx, base_offsety,           'e')
     
     # **************************************************************************************************************
     # Connection Handling
@@ -191,6 +178,8 @@ class FactoryObj():
         imported = bpy.context.selected_objects
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
         for obj in imported:
+            obj["asset_type"] = asset_type
+
             obj.location.x += base_offsetx
             obj.location.y += base_offsety
             obj.location.z = self.base_offsetz
@@ -254,11 +243,11 @@ class FactoryObj():
             "RockPile": self.get_material("RockPile_Albedo", '../assets/textures/RockPile_Albedo.jpg'),
             "StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/StriatedRock_Albedo.jpg')
         })
-
-        # 2. List of objects to assign the material to
+        
+        # List of objects to assign the material to
         objects_to_assign = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']  # Can filter based on specific criteria
 
-        # 3. Assign the material to all objects
+        # Assign the material to all objects
         for obj in objects_to_assign:
             material = materials.get(obj.name.split('.')[0])
             if obj.data.materials:  obj.data.materials[0] = material     # Replace the first material slot or you can choose another index
@@ -273,4 +262,4 @@ class FactoryObj():
         merged_obj = bpy.context.active_object
         merged_obj.name = get_random_id()  # Rename the merged object
 
-        return self.imported_objects, self.shaftOffsetx, self.shaftOffsety, self.shaftOffsetz
+        return self.imported_objects, self.shaftOffset
