@@ -29,17 +29,27 @@ def isContiguous(node, node_array):
         if check: break
     return check, contiguous
 
+def updateVisitation(origin, row, col, visitation):
+    node = (row, col)
+    check, contiguous = isContiguous(node, node_array)
+    if check:  node = contiguous
+    else:      node_array.append(node)
+    visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+
+###
+
 for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as indicated
 
     level_array = []
-    for ldx in range(topology["world_n_levels"]):   # Reproduce spawn at each level 
+    world_n_levels = np.random.randint(low=topology["world_n_levels"][0], high=topology["world_n_levels"][1]+1, size=1)[0]
+    for ldx in range(world_n_levels):   # Reproduce spawn at each level 
 
-        grid = GridMap(withShaft=True if ldx < topology["world_n_levels"] - 1 else False, level=ldx)  # Create grid map with shaft connection at all levels except the last one
+        grid = GridMap(withShaft=True if ldx < world_n_levels - 1 else False, level=ldx)  # Create grid map with shaft connection at all levels except the last one
         visitation = np.zeros([grid_rows, grid_columns])
 
         node_array = []
 
-        world_n_loops_per_level = topology["world_n_loops_per_level"]
+        world_n_loops_per_level = np.random.randint(low=topology["world_n_loops_per_level"][0], high=topology["world_n_loops_per_level"][1]+1, size=1)[0]
         constraint_loop_array = []
         for _ in range(world_n_loops_per_level):  # Define loop constraints
             constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
@@ -53,46 +63,22 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
             origin = constraint_loop_array[cdx]
             row_constraint = origin[0];  col_constraint = origin[1]
-
-            node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], 
-                    np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+            updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
 
             origin = constraint_loop_array[cdx+1]
             row_constraint = origin[0];  col_constraint = origin[1]
-
-            node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], 
-                    np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+            updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
 
             origin = constraint_loop_array[cdx+2]
             row_constraint = origin[0];  col_constraint = origin[1]
-
-            node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], 
-                    np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+            updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
 
             origin = constraint_loop_array[cdx+3]
             row_constraint = origin[0];  col_constraint = origin[1]
-
-            node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], 
-                    np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+            updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
 
 
-        world_n_tjunctions_per_level = topology["world_n_tjunctions_per_level"]
+        world_n_tjunctions_per_level = np.random.randint(low=topology["world_n_tjunctions_per_level"][0], high=topology["world_n_tjunctions_per_level"][1]+1, size=1)[0]
         constraint_junction_array = []
         constraint_junction_type_array = []
         for _ in range(world_n_tjunctions_per_level):  # Define tjunctions
@@ -106,109 +92,39 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
             junction_type = constraint_junction_type_array[cdx]
             if   junction_type == 0:
-                # c
-                # x c
-                # c
-
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
 
-                node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-                node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-                node = (row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         col_constraint, visitation)
+                updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint, visitation)
+                updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
 
             elif junction_type == 1:
-                #   c
-                # c x
-                #   c
-
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
 
-                node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-                node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-                node = (row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         col_constraint, visitation)
+                updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint, visitation)
+                updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
                 
             elif junction_type == 2:
-                # c x c
-                #   c
-
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
 
-                node = (row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+                updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
+                updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
+                updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint, visitation)
                 
-                node = (row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-                node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
             elif junction_type == 3:
-                #   c
-                # c x c
-                
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
 
-                node = (row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+                updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
+                updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
+                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint, visitation)
                 
-                node = (row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
 
-                node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint)
-                check, contiguous = isContiguous(node, node_array)
-                if check:  node = contiguous
-                else:      node_array.append(node)
-                visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-
-        world_n_intersections_per_level = topology["world_n_intersections_per_level"]
+        world_n_intersections_per_level = np.random.randint(low=topology["world_n_intersections_per_level"][0], high=topology["world_n_intersections_per_level"][1]+1, size=1)[0]
         constraint_intersection_array = []
         for _ in range(world_n_intersections_per_level):  # Define intersections
             constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
@@ -219,33 +135,10 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
             origin = constraint_intersection_array[cdx]
             row_constraint = origin[0];  col_constraint = origin[1]
 
-            # np.random.randint(low=col_constraint-1, high=col_constraint+1, size=1)[0]
-            node = (np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint)
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-            # np.random.randint(low=col_constraint-1, high=col_constraint+1, size=1)[0]
-            node = (np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint)
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-            # np.random.randint(low=row_constraint-1, high=row_constraint+1, size=1)[0]
-            node = (row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
-
-            # np.random.randint(low=row_constraint-1, high=row_constraint+1, size=1)[0]
-            node = (row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0])
-            check, contiguous = isContiguous(node, node_array)
-            if check:  node = contiguous
-            else:      node_array.append(node)
-            visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+            updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         col_constraint,                                                     visitation)
+            updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint,                                                     visitation)
+            updateVisitation(origin, row_constraint,                                                     np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
+            updateVisitation(origin, row_constraint,                                                     np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
 
 
         for node in node_array:  # Set high cost to objective nodes
@@ -255,16 +148,23 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
         level_array.append(grid)
         print(grid.__str__())
 
+    # exit(0)
 
     mesh_level_offset_array = []
     mesh_level_rotation_array = []
     mesh_level_filename_array = []
     mesh_level_direction_array = []
 
-    baseOffsetz = 0.0
-    for ldx, level in enumerate(level_array):
-        imported_objects, shaftOffset = factory_obj.world(level.grid_map, level.originShaftNode if ldx == 0 else level.destinationShaftNode, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
-        baseOffsetz += 32
+    baseOffsetz = 0.0; assetMaxWidth = 0.0
+    for ldx in range(len(level_array)):
+        level = level_array[ldx]
+        try:
+            imported_objects, shaftOffset, newBaseOffsetz, newAssetMaxWidth = factory_obj.world(level.grid_map, level.originShaftNode if ldx == 0 else level.destinationShaftNode, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
+        except Exception:
+            ldx -= 1;  continue
+
+        if newAssetMaxWidth > assetMaxWidth: assetMaxWidth = newAssetMaxWidth
+        baseOffsetz += newBaseOffsetz
 
         if ldx == 0:  
             mesh_level_rotation_array.append(0)
@@ -359,6 +259,19 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
         merged_obj.location.x = 0.0
         merged_obj.location.y = 0.0
+    
+    scaleWidth = 1.0
+    world_max_width = np.random.randint(low=topology['world_max_width'][0], high=topology['world_max_width'][1]+1, size=1)[0]
+    if assetMaxWidth > world_max_width:
+        scaleWidth = world_max_width/assetMaxWidth
+
+    scaleLength = 1.0
+    world_min_length = np.random.randint(low=topology['world_min_length'][0], high=topology['world_min_length'][1]+1, size=1)[0]
+    if merged_obj.dimensions[2] < world_min_length:
+        scaleLength = world_min_length/merged_obj.dimensions[2]
+
+    merged_obj.scale = (scaleWidth, 1.0, scaleLength)
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
     filename = ''.join(random.choice(string.ascii_letters) for i in range(8))
     bpy.ops.wm.obj_export(filepath=os.path.join('../repo', filename + '.obj'))

@@ -10,6 +10,11 @@ class FactoryObj():
         self.imported_objects = []
 
         self.base_offsetz = 0.0  # Default base offset for z-axis
+        self.new_base_offsetz = 0.0  # Default base offset for z-axis
+
+        self.world_length = 0
+        self.asset_max_width = -np.inf
+
         self.shaftOffset= [0.0, 0.0, 0.0]     # Default shaft offsets
 
         with open('../config/dimensions-type-a.yaml', 'r') as file:
@@ -84,6 +89,9 @@ class FactoryObj():
             for obj in imported:
                 obj["asset_type"] = asset_type
 
+                if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
+                    bpy.data.objects.remove(obj);  continue
+
                 obj.location.x += base_offsetx
                 obj.location.y += base_offsety
                 obj.location.z = self.base_offsetz
@@ -99,7 +107,11 @@ class FactoryObj():
         # Update horizontal and vertical offsets
         offsetx = dimensions[asset_type]['pos'][0]
         offsety = dimensions[asset_type]['pos'][1]
-        offsetz = dimensions[asset_type]['pos'][2]
+        if connection_type == "shaft":
+            self.new_base_offsetz = dimensions[asset_type]['pos'][2]
+
+        if offsetx > self.asset_max_width:  self.asset_max_width = offsetx
+        if offsety > self.asset_max_width:  self.asset_max_width = offsety
 
         if originDir != None and originDir not in graph[idx][jdx].openings:  graph[idx][jdx].openings.append(originDir)
 
@@ -145,6 +157,9 @@ class FactoryObj():
             for obj in imported:
                 obj["asset_type"] = asset_type
 
+                if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
+                    bpy.data.objects.remove(obj);  continue
+
                 obj.location.x += new_offsetx
                 obj.location.y += new_offsety
                 obj.location.z = self.base_offsetz
@@ -179,6 +194,9 @@ class FactoryObj():
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
         for obj in imported:
             obj["asset_type"] = asset_type
+
+            if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
+                bpy.data.objects.remove(obj);  continue
 
             obj.location.x += base_offsetx
             obj.location.y += base_offsety
@@ -239,13 +257,13 @@ class FactoryObj():
 
         materials = {}
         materials.update({
-            "CaveWall": self.get_material("CaveWall_Albedo", '../assets/textures/CaveWall_Albedo.jpg'),
-            "RockPile": self.get_material("RockPile_Albedo", '../assets/textures/RockPile_Albedo.jpg'),
-            "StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/StriatedRock_Albedo.jpg')
+            "CaveWall": self.get_material("CaveWall_Albedo", '../assets/textures/CaveWall_Operational.png'),
+            # "RockPile": self.get_material("RockPile_Albedo", '../assets/textures/RockPile_LavaTube.png'),
+            # "StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/CaveWall_LavaTube.png')
         })
         
         # List of objects to assign the material to
-        objects_to_assign = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']  # Can filter based on specific criteria
+        objects_to_assign = [obj for obj in self.imported_objects if obj.type == 'MESH']  # Can filter based on specific criteria
 
         # Assign the material to all objects
         for obj in objects_to_assign:
@@ -262,4 +280,4 @@ class FactoryObj():
         merged_obj = bpy.context.active_object
         merged_obj.name = get_random_id()  # Rename the merged object
 
-        return self.imported_objects, self.shaftOffset
+        return self.imported_objects, self.shaftOffset, self.new_base_offsetz, self.asset_max_width
