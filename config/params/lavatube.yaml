@@ -2,22 +2,21 @@
 # Spatial description of the environment
 
 generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
-generation_n_worlds: 1
+generation_n_worlds: 10
 
-generation_seed: 11              
+generation_seed: 11
 
-world_topology: 'lavatube'                              # operational, natural, lavatube
-world_mission_navigation: ['ground', 'uav', 'mixed']    # ground, uav, mixed
+connection_avg_width: 300
 
-world_max_width:  [10, 30]
-world_min_length: [1000, 5000]                          # In meters
+world_max_length: 500             # In meters
+world_topology: 'lavatube'        # operational, natural, lavatube
+world_mission_navigation: 'uav'   # ground, uav, mixed
 
-world_n_levels: [1, 2]                          
-world_n_loops_per_level: [0, 2]                 
-world_n_tjunctions_per_level: [0, 2]           
-world_n_intersections_per_level: [0, 2]         
+world_n_levels: 5
+world_n_loops_per_level: 1
+world_n_tjunctions_per_level: 0
+world_n_intersections_per_level: 0
 
-## 
 
 # ****************************************************************************************************************
 # Repository paths
@@ -28,6 +27,14 @@ asset_path: '/home/fernand0labra/rai-subtgraph/assets/subt/'
 # minibla
 darpa_dimensions_type_a: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-a.yaml'
 darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-b.yaml'
+
+
+# ****************************************************************************************************************
+# Textures
+
+cave_wall: 'CaveWall_LavaTube.png'
+rock_pile: 'RockPile_LavaTube.png'
+striated_rock: 'CaveWall_LavaTube.png'
 
 
 # ****************************************************************************************************************
@@ -95,7 +102,7 @@ env_asset_list_type_b:  # minibla  TODO
   shaft: 
     parameters: 'shaft,e,n,s,w'
     assets: [
-      "cave_vertical_shaft_type_b",
+      # "cave_vertical_shaft_type_b",
       "cave_elevation_type_b"
     ]
 
