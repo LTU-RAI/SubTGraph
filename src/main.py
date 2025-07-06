@@ -165,9 +165,9 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
         if len(level_array) > 1:
             origin = level.originShaftNode if ldx == 0 else level.destinationShaftNode
 
-        # try:
-        imported_objects, shaftOffset, newBaseOffsetz, newAssetMaxWidth = factory_obj.world(level.grid_map, origin, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
-        # except Exception: print("Internal error during build, please try again.");  exit(0)
+        try:
+            imported_objects, shaftOffset, newBaseOffsetz, newAssetMaxWidth = factory_obj.world(level.grid_map, origin, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
+        except Exception: print("Internal error during build, please try again.");  exit(0)
 
         if newAssetMaxWidth > assetMaxWidth: assetMaxWidth = newAssetMaxWidth
         baseOffsetz += newBaseOffsetz
@@ -278,7 +278,7 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
     if merged_obj.dimensions[2] < world_min_length:
         scaleLength = world_min_length/merged_obj.dimensions[2]
 
-    merged_obj.scale = (scaleWidth, 1.0, scaleLength)
+    merged_obj.scale = (scaleWidth, scaleWidth, scaleLength)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
     filename = ''.join(random.choice(string.ascii_letters) for i in range(8))
