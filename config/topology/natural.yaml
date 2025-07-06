@@ -5,13 +5,13 @@ generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
 generation_seed: 11
 
 generation_n_worlds: 1
-generation_tile_type: 'a'
+generation_tile_type: 'b'
 
-world_max_width:  [40, 50]
-world_min_length: [3000, 5000]
+world_max_width:  [10, 30]
+world_min_length: [3000, 3000]
 
-world_n_levels: [1, 5]                          
-world_n_loops_per_level: [0, 2]                 
+world_n_levels: [1, 3]                          
+world_n_loops_per_level: [1, 2]                 
 world_n_tjunctions_per_level: [0, 0]           
 world_n_intersections_per_level: [0, 1]         
 
@@ -28,7 +28,7 @@ darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-ty
 # ****************************************************************************************************************
 # Textures
 
-texture_cave_wall: 'CaveWall_Natural.png'
+texture_cave_wall: 'CaveWall_Natural.jpg'
 texture_rock_pile: 'RockPile_Natural.jpg'
 texture_striated_rock: 'StriatedRock_Natural.jpg'
 
