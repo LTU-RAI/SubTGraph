@@ -54,7 +54,6 @@ env_asset_list_type_a:
   straight:     
     parameters: 'straight,e,w'
     assets: [
-      # "cave_cavern_type_a",
       "cave_split_type_a",
       "cave_straight_type_a",
     ]
@@ -63,7 +62,7 @@ env_asset_list_type_a:
     parameters: 'shaft,e,n,s,w'
     assets: [
       "cave_elevation_straight_type_a",
-      # "cave_elevation_02_type_a"
+      "cave_elevation_02_type_a"
     ]
 
   junction:     
