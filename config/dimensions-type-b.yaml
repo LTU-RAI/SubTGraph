@@ -1,9 +1,5 @@
 folder: "type_b"
 
-cave_transition_type_a_to_and_from_type_b:
-  pos: []
-  name: "cavetransition"
-
 cave_3_way_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cave3way"
@@ -16,14 +12,6 @@ cave_cap_type_b:
   pos: [0.0, 0.0, 0.0]
   name: "cavecap"
 
-cave_cavern_split_01_type_b:
-  pos: [40.0, 80.0, 90.0]
-  name: "cavernsplit01"
-
-cave_cavern_split_02_type_b:
-  pos: [40.0, 0.0, 0.0]
-  name: "cavernsplit02"
-
 cave_corner_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavecorner01"
@@ -35,10 +23,6 @@ cave_corner_02_type_b:
 cave_elevation_type_b:
   pos: [40.0, 40.0, 32.0]
   name: "caveelevation"
-
-cave_starting_area_type_b:
-  pos: [0.0, 40.0, 0.0]
-  name: "cavestartingarea"
 
 cave_straight_01_type_b:
   pos: [40.0, 40.0, 0.0]

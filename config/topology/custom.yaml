@@ -5,29 +5,32 @@ generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
 generation_n_worlds: 1
 
 generation_seed: 11              
+generation_tile_type: 'a'
 
-world_topology: 'lavatube'                              # operational, natural, lavatube
-world_mission_navigation: ['ground', 'uav', 'mixed']    # ground, uav, mixed
+world_max_width:  [1000, 1001]
+world_min_length: [500, 1000]
 
-world_max_width:  [10, 30]
-world_min_length: [1000, 5000]                          # In meters
+world_n_levels: [2, 2]                          
+world_n_loops_per_level: [1, 1]                 
+world_n_tjunctions_per_level: [0, 0]           
+world_n_intersections_per_level: [0, 0]        
 
-world_n_levels: [1, 2]                          
-world_n_loops_per_level: [0, 2]                 
-world_n_tjunctions_per_level: [0, 2]           
-world_n_intersections_per_level: [0, 2]         
-
-## 
 
 # ****************************************************************************************************************
 # Repository paths
 
-# minibla
 asset_path: '/home/fernand0labra/rai-subtgraph/assets/subt/'
 
-# minibla
 darpa_dimensions_type_a: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-a.yaml'
 darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-b.yaml'
+
+
+# ****************************************************************************************************************
+# Textures
+
+texture_cave_wall: 'CaveWall_Natural.jpg'
+texture_rock_pile: 'RockPile_Natural.jpg'
+texture_striated_rock: 'StriatedRock_Natural.jpg'
 
 
 # ****************************************************************************************************************
@@ -44,21 +47,29 @@ env_asset_list_type_a:
   corner:       
     parameters: 'corner,e,s'
     assets: [
-      "cave_corner_01_type_b",
-      "cave_corner_02_type_b",
+      "cave_corner_01_type_a",
+      "cave_corner_03_type_a",
     ]
 
   straight:     
     parameters: 'straight,e,w'
     assets: [
-      "cave_cavern_type_a",
+      # "cave_cavern_type_a",
       "cave_split_type_a",
+      "cave_straight_type_a",
+    ]
+
+  shaft: 
+    parameters: 'shaft,e,n,s,w'
+    assets: [
+      "cave_elevation_straight_type_a",
+      # "cave_elevation_02_type_a"
     ]
 
   junction:     
     parameters: 'junction,e,n,s'
     assets: [
-      "cave_3_way_01_type_b"
+      "cave_3_way_type_a"
     ]
 
   intersection: 
@@ -67,7 +78,7 @@ env_asset_list_type_a:
       "cave_4_way_01_type_a",
     ]
 
-env_asset_list_type_b:  # minibla  TODO
+env_asset_list_type_b:
   node: 
     parameters: 'node'
     assets: [

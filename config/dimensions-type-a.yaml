@@ -1,32 +1,8 @@
 folder: "type_a"
 
-cave_transition_type_a_to_and_from_type_b:
-  pos: []
-  name: "cavetransition"
-
-cave_2_way_01_type_a:
-  pos: []
-  name: "2way01"
-
-cave_3_way_01_type_a:
-  pos: []
-  name: "3way01"
-
-cave_3_way_02_type_a:
-  pos: []
-  name: "3way02"
-
-cave_3_way_elevation_01_type_a:
-  pos: []
-  name: "3wayelevation01"
-
-cave_3_way_elevation_02_type_a:
-  pos: []
-  name: "3wayelevation02"
-
-cave_3_way_elevation_03_type_a:
-  pos: []
-  name: "3wayelevation03"
+cave_3_way_type_a:
+  pos: [130.0, 130.0, 0]
+  name: "3way"
 
 cave_4_way_01_type_a:
   pos: [130.0, 130.0, 0]
@@ -37,77 +13,29 @@ cave_cap_type_a:
   name: "cap"
 
 cave_cavern_type_a:
-  pos: [130.0, 130.0, -1.0]
+  pos: [130.0, 130.0, 0.0]
   name: "cavern"
 
 cave_corner_01_type_a:
   pos: [130.0, 130.0, 0.0]
   name: "corner01"
 
-cave_corner_02_type_a:
-  pos: []
-  name: "corner02"
-
 cave_corner_03_type_a:
   pos: [130.0, 130.0, 0.0]
   name: "corner03"
 
-cave_corner_04_type_a:
-  pos: []
-  name: "corner04"
-
-cave_elevation_01_type_a:
-  pos: []
-  name: "elevation01"
-
 cave_elevation_02_type_a:
-  pos: []
+  pos: [250.0, 250.0, 375.0]
   name: "elevation02"
 
 cave_elevation_straight_type_a:
-  pos: []
-  name: "elevationcorner"
-
-cave_elevation_straight_type_a:
-  pos: []
+  pos: [250.0, 250.0, 130.0]
   name: "elevationstraight01"
 
 cave_split_type_a:
-  pos: [250.0, 250.0, 0.0]
+  pos: [130.0, 130.0, 0.0]
   name: "split"
-
-cave_straight_shift_type_a:
-  pos: []
-  name: "straightshift"
 
 cave_straight_type_a:
   pos: [130.0, 130.0, 0.0]
   name: "straight"
-
-cave_u_turn_01_type_a:
-  pos: []
-  name: "uturn01"
-
-cave_u_turn_elevation_type_a:
-  pos: []
-  name: "uturnelevation"
-
-cave_vertical_shaft_cantilevered_type_a:
-  pos: []
-  name: "verticalshaftcantilevered"
-
-cave_vertical_shaft_dead_end_type_a:
-  pos: []
-  name: "verticalshaftdeadend"
-
-cave_vertical_shaft_straight_bottom_type_a:
-  pos: []
-  name: "verticalshaftstraightbottom"
-
-cave_vertical_shaft_straight_top_type_a:
-  pos: []
-  name: "verticalshaftcantileveredstraighttop"
-
-cave_vertical_shaft_type_a:
-  pos: []
-  name: "verticalshaft"

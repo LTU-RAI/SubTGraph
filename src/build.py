@@ -12,7 +12,8 @@ class FactoryObj():
         self.base_offsetz = 0.0  # Default base offset for z-axis
         self.new_base_offsetz = 0.0  # Default base offset for z-axis
 
-        self.world_length = 0
+        self.env_asset_list = topology['env_asset_list_type_a'] if topology['generation_tile_type'] == 'a' else topology['env_asset_list_type_b']
+
         self.asset_max_width = -np.inf
 
         self.shaftOffset= [0.0, 0.0, 0.0]     # Default shaft offsets
@@ -75,7 +76,7 @@ class FactoryObj():
 
     def get_node_idx_jdx(self, graph, idx, jdx, base_offsetx, base_offsety, originDir):
         openings, connection_type, angle = self.get_node_info(graph, idx, jdx)
-        asset_type = topology['env_asset_list_type_b'][connection_type.split("_")[0]]["assets"][np.random.randint(0, len(topology['env_asset_list_type_b'][connection_type.split("_")[0]]["assets"]))]
+        asset_type = self.env_asset_list[connection_type.split("_")[0]]["assets"][np.random.randint(0, len(self.env_asset_list[connection_type.split("_")[0]]["assets"]))]
         dimensions = self.get_dimensions(asset_type)
 
         if connection_type != "shaft_aux":
@@ -89,8 +90,8 @@ class FactoryObj():
             for obj in imported:
                 obj["asset_type"] = asset_type
 
-                if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
-                    bpy.data.objects.remove(obj);  continue
+                if "RockPile" in obj.name and topology['texture_rock_pile'] == '':             bpy.data.objects.remove(obj);  continue
+                if "StriatedRock" in obj.name  and topology['texture_striated_rock'] == '':    bpy.data.objects.remove(obj);  continue
 
                 obj.location.x += base_offsetx
                 obj.location.y += base_offsety
@@ -120,7 +121,7 @@ class FactoryObj():
             if graph[dst_idx][dst_jdx].openings.__len__() == 0: return
 
             _, connection_type, _ = self.get_connection_info(graph, dst_idx, dst_jdx)
-            asset_type = topology['env_asset_list_type_b'][connection_type]["assets"][np.random.randint(0, len(topology['env_asset_list_type_b'][connection_type]["assets"]))]
+            asset_type = self.env_asset_list[connection_type]["assets"][np.random.randint(0, len(self.env_asset_list[connection_type]["assets"]))]
 
             dimensions = self.get_dimensions(asset_type)
             if connection == 'n': new_offsety -= dimensions[asset_type]['pos'][1]
@@ -157,8 +158,8 @@ class FactoryObj():
             for obj in imported:
                 obj["asset_type"] = asset_type
 
-                if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
-                    bpy.data.objects.remove(obj);  continue
+                if "RockPile" in obj.name and topology['texture_rock_pile'] == '':             bpy.data.objects.remove(obj);  continue
+                if "StriatedRock" in obj.name  and topology['texture_striated_rock'] == '':    bpy.data.objects.remove(obj);  continue
 
                 obj.location.x += new_offsetx
                 obj.location.y += new_offsety
@@ -183,7 +184,7 @@ class FactoryObj():
 
     def get_connection_idx_jdx(self, graph, idx, jdx, base_offsetx, base_offsety, origin):
         openings, connection_type, angle = self.get_connection_info(graph, idx, jdx)
-        asset_type = topology['env_asset_list_type_b'][connection_type]["assets"][np.random.randint(0, len(topology['env_asset_list_type_b'][connection_type]["assets"]))]
+        asset_type = self.env_asset_list[connection_type]["assets"][np.random.randint(0, len(self.env_asset_list[connection_type]["assets"]))]
         dimensions = self.get_dimensions(asset_type)
         obj_path = os.path.join(topology['asset_path'], dimensions["folder"].replace('_', ' '), asset_type.replace('_', ' '), dimensions[asset_type]['name'] + '.obj')
 
@@ -195,8 +196,9 @@ class FactoryObj():
         for obj in imported:
             obj["asset_type"] = asset_type
 
-            if "RockPile" in obj.name or "StriatedRock" in obj.name:  # 
-                bpy.data.objects.remove(obj);  continue
+            if "RockPile" in obj.name and topology['texture_rock_pile'] == '':             bpy.data.objects.remove(obj);  continue
+            if "StriatedRock" in obj.name  and topology['texture_striated_rock'] == '':    bpy.data.objects.remove(obj);  continue
+
 
             obj.location.x += base_offsetx
             obj.location.y += base_offsety
@@ -224,7 +226,7 @@ class FactoryObj():
                 function_info = self.get_connection_info; function_asset = self.get_connection_idx_jdx
             
             _, connection_type, _ = function_info(graph, dst_idx, dst_jdx)
-            asset_type = topology['env_asset_list_type_b'][connection_type]["assets"][np.random.randint(0, len(topology['env_asset_list_type_b'][connection_type]["assets"]))]
+            asset_type = self.env_asset_list[connection_type]["assets"][np.random.randint(0, len(self.env_asset_list[connection_type]["assets"]))]
 
             dimensions = self.get_dimensions(asset_type)
             if connection == 'n': new_offsetv -= dimensions[asset_type]['pos'][1]
@@ -256,12 +258,16 @@ class FactoryObj():
         self.get_node_idx_jdx(graph, origin[0], origin[1], base_offsetx, base_offsety, None)
 
         materials = {}
-        materials.update({
-            "CaveWall": self.get_material("CaveWall_Albedo", '../assets/textures/CaveWall_Operational.png'),
-            # "RockPile": self.get_material("RockPile_Albedo", '../assets/textures/RockPile_LavaTube.png'),
-            # "StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/CaveWall_LavaTube.png')
-        })
-        
+        materials.update({"CaveWall": self.get_material("CaveWall_Albedo", '../assets/textures/' + topology['texture_cave_wall'])})
+        materials.update({"Gravel": self.get_material("CaveWall_Albedo", '../assets/textures/' + topology['texture_cave_wall'])})
+        materials.update({"Cap": self.get_material("CaveWall_Albedo", '../assets/textures/' + topology['texture_cave_wall'])})
+
+        if topology['texture_rock_pile'] != '':
+            materials.update({"RockPile": self.get_material("RockPile_Albedo", '../assets/textures/' + topology['texture_rock_pile'])})
+
+        if topology['texture_striated_rock'] != '':
+            materials.update({"StriatedRock": self.get_material("StriatedRock_Albedo", '../assets/textures/' + topology['texture_striated_rock'])})
+
         # List of objects to assign the material to
         objects_to_assign = [obj for obj in self.imported_objects if obj.type == 'MESH']  # Can filter based on specific criteria
 

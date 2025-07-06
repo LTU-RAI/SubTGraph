@@ -2,29 +2,25 @@
 # Spatial description of the environment
 
 generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
-generation_n_worlds: 10
-
 generation_seed: 11
 
-connection_avg_width: 300
+generation_n_worlds: 1
+generation_tile_type: 'a'
 
-world_max_length: 500               # In meters
-world_topology: 'lavatube'          # operational, natural, lavatube
-world_mission_navigation: 'ground'   # ground, uav, mixed
+world_max_width:  [40, 50]
+world_min_length: [500, 1000]
 
-world_n_levels: 5
-world_n_loops_per_level: 1
-world_n_tjunctions_per_level: 2
-world_n_intersections_per_level: 1
+world_n_levels: [1, 5]                          
+world_n_loops_per_level: [0, 1]                 
+world_n_tjunctions_per_level: [0, 2]           
+world_n_intersections_per_level: [0, 1]         
 
 
 # ****************************************************************************************************************
 # Repository paths
 
-# minibla
 asset_path: '/home/fernand0labra/rai-subtgraph/assets/subt/'
 
-# minibla
 darpa_dimensions_type_a: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-a.yaml'
 darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-b.yaml'
 
@@ -32,9 +28,9 @@ darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-ty
 # ****************************************************************************************************************
 # Textures
 
-cave_wall: 'CaveWall_Operational.png'
-rock_pile: ''
-striated_rock: ''
+texture_cave_wall: 'CaveWall_Operational.png'
+texture_rock_pile: ''
+texture_striated_rock: ''
 
 
 # ****************************************************************************************************************
@@ -74,29 +70,29 @@ env_asset_list_type_a:
       "cave_4_way_01_type_a",
     ]
 
-env_asset_list_type_b:  # minibla  TODO
+env_asset_list_type_b: 
   node: 
     parameters: 'node'
     assets: [
       "cave_corner_01_type_b",
-      "cave_corner_02_type_b",
+      # "cave_corner_02_type_b",
     ]
 
   corner:       
     parameters: 'corner,e,s'
     assets: [
       "cave_corner_01_type_b",
-      "cave_corner_02_type_b",
+      # "cave_corner_02_type_b",
     ]
 
   straight:     
     parameters: 'straight,e,w'
     assets: [
       "cave_straight_01_type_b",
-      "cave_straight_02_type_b",
-      "cave_straight_03_type_b",
+      # "cave_straight_02_type_b",
+      # "cave_straight_03_type_b",
       "cave_straight_04_type_b",
-      "cave_straight_05_type_b",
+      # "cave_straight_05_type_b",
     ]
 
   shaft: 

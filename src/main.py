@@ -41,10 +41,12 @@ def updateVisitation(origin, row, col, visitation):
 for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as indicated
 
     level_array = []
+    level_origin_array = []
+
     world_n_levels = np.random.randint(low=topology["world_n_levels"][0], high=topology["world_n_levels"][1]+1, size=1)[0]
     for ldx in range(world_n_levels):   # Reproduce spawn at each level 
 
-        grid = GridMap(withShaft=True if ldx < world_n_levels - 1 else False, level=ldx)  # Create grid map with shaft connection at all levels except the last one
+        grid = GridMap(withDestinationShaft=(world_n_levels > 1), withOriginShaft=(ldx < world_n_levels - 1), level=ldx)  # Create grid map with shaft connection at all levels except the last one
         visitation = np.zeros([grid_rows, grid_columns])
 
         node_array = []
@@ -140,13 +142,13 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
             updateVisitation(origin, row_constraint,                                                     np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
             updateVisitation(origin, row_constraint,                                                     np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
 
-
+        level_origin_array.append(node_array[0])
         for node in node_array:  # Set high cost to objective nodes
             visitation[node[0], node[1]] = 1000
 
         grid.dijkstra_grid(visitation)  # Create grid from visitation satisfying local constraints
         level_array.append(grid)
-        print(grid.__str__())
+        # print(grid.__str__())
 
     # exit(0)
 
@@ -155,20 +157,26 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
     mesh_level_filename_array = []
     mesh_level_direction_array = []
 
-    baseOffsetz = 0.0; assetMaxWidth = 0.0
-    for ldx in range(len(level_array)):
+    baseOffsetz = 0.0;  assetMaxWidth = 0.0
+    for ldx in range(world_n_levels):
+
         level = level_array[ldx]
-        try:
-            imported_objects, shaftOffset, newBaseOffsetz, newAssetMaxWidth = factory_obj.world(level.grid_map, level.originShaftNode if ldx == 0 else level.destinationShaftNode, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
-        except Exception:
-            ldx -= 1;  continue
+        origin = level_origin_array[ldx]
+        if len(level_array) > 1:
+            origin = level.originShaftNode if ldx == 0 else level.destinationShaftNode
+
+        # try:
+        imported_objects, shaftOffset, newBaseOffsetz, newAssetMaxWidth = factory_obj.world(level.grid_map, origin, 0.0, 0.0, baseOffsetz)  # Create .obj mesh
+        # except Exception: print("Internal error during build, please try again.");  exit(0)
 
         if newAssetMaxWidth > assetMaxWidth: assetMaxWidth = newAssetMaxWidth
         baseOffsetz += newBaseOffsetz
 
         if ldx == 0:  
             mesh_level_rotation_array.append(0)
-            mesh_level_direction_array.append(level.grid_map[level.originShaftNode[0]][level.originShaftNode[1]].org_diff)  # First level is always 0 degrees
+
+            if len(level_array) > 1:
+                mesh_level_direction_array.append(level.grid_map[level.originShaftNode[0]][level.originShaftNode[1]].org_diff)  # First level is always 0 degrees
 
         else:  # Rotate other levels based on the direction of the shaft
             org_direction = mesh_level_direction_array[ldx - 1]

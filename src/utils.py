@@ -4,7 +4,7 @@ from graph.shape import EmptyShape
 
 ###
 
-with open('../config/topology.yaml', 'r') as file:
+with open('../config/topology/custom.yaml', 'r') as file:
     topology = yaml.safe_load(file)
 
 grid_rows = grid_columns = int(math.sqrt(np.random.randint(low=topology["world_min_length"][0], high=topology["world_min_length"][1]+1, size=1)[0]))

@@ -8,12 +8,15 @@ from graph.dijkstra import *
 
 class GridMap():
 
-    def __init__(self, withShaft=False, level=0):
+    def __init__(self, withOriginShaft=False, withDestinationShaft=False, level=0):
         self.grid_map =[[""] * grid_columns for _ in range(grid_rows)]
-        self.level = level                # Level of the grid map, used for shaft connection
-        self.withShaft = withShaft        # If the grid map has a shaft connection
-        self.originShaftNode = None       # Shaft node position in the grid map
-        self.destinationShaftNode = None  # Destination shaft node position in the grid map
+        self.level = level                                  # Level of the grid map, used for shaft connection
+        
+        self.withOriginShaft = withOriginShaft              # If the grid map has a shaft connection
+        self.withDestinationShaft = withDestinationShaft    # If the grid map has a shaft connection
+
+        self.originShaftNode = None                         # Shaft node position in the grid map
+        self.destinationShaftNode = None                    # Destination shaft node position in the grid map
 
     def dijkstra_grid(self, visitation):
 
@@ -83,7 +86,7 @@ class GridMap():
                     if isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 1, "e": 0}, operator.ge):  self.grid_map[idx][jdx].opening("w")
                     if isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 0, "e": 1}, operator.ge):  self.grid_map[idx][jdx].opening("e")
 
-                    if self.withShaft:
+                    if self.withOriginShaft:
                         
                         if self.originShaftNode is None:  # If shaft enabled, add shaft only once
                             if self.grid_map[idx][jdx].openings.__len__() == 3: 
@@ -95,7 +98,7 @@ class GridMap():
                                 self.destinationShaftNode = [idx, jdx]  # Save shaft node position
                                 self.grid_map[idx][jdx].set_destination_shaft()
 
-                    else:  # If shaft not enabled, save first node as shaft node
+                    elif self.withDestinationShaft and not self.withOriginShaft:  # If shaft not enabled, save first node as shaft node
 
                         if self.destinationShaftNode is None:  # If shaft enabled, add shaft only once
                             if self.grid_map[idx][jdx].openings.__len__() == 3: 
