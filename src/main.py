@@ -34,7 +34,7 @@ def updateVisitation(origin, row, col, visitation):
     check, contiguous = isContiguous(node, node_array)
     if check:  node = contiguous
     else:      node_array.append(node)
-    visitation += dijkstraSolver(origin, node, [origin], grid_rows)[1]  # Create visitation from user parameters
+    visitation += dijkstraSolver(origin, node, grid_rows)[1]  # Create visitation from user parameters
 
 ###
 
@@ -108,7 +108,7 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
                 updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0],         col_constraint, visitation)
                 updateVisitation(origin, np.random.randint(low=row_constraint+2, high=grid_rows, size=1)[0], col_constraint, visitation)
                 updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
-                
+
             elif junction_type == 2:
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
@@ -120,11 +120,10 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
             elif junction_type == 3:
                 origin = constraint_junction_array[cdx]
                 row_constraint = origin[0];  col_constraint = origin[1]
-
+                
                 updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-2, size=1)[0],         visitation)
                 updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+2, high=grid_rows, size=1)[0], visitation)
-                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint, visitation)
-                
+                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-2, size=1)[0], col_constraint,         visitation)
 
         world_n_intersections_per_level = np.random.randint(low=topology["world_n_intersections_per_level"][0], high=topology["world_n_intersections_per_level"][1]+1, size=1)[0]
         constraint_intersection_array = []
@@ -148,7 +147,7 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
         grid.dijkstra_grid(visitation)  # Create grid from visitation satisfying local constraints
         level_array.append(grid)
-        # print(grid.__str__())
+        print(grid.__str__())
 
     # exit(0)
 

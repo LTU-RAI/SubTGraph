@@ -5,16 +5,16 @@ generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
 generation_n_worlds: 1
 
 generation_seed: 11              
-generation_tile_type: 'a'
+generation_tile_type: 'b'
+generation_topology: 'parabolic'
 
-world_max_width:  [1000, 1001]
-world_min_length: [500, 1000]
+world_max_width:  [50, 50]
+world_min_length: [100, 100]
 
-world_n_levels: [2, 2]                          
-world_n_loops_per_level: [1, 1]                 
-world_n_tjunctions_per_level: [0, 0]           
+world_n_levels: [1, 1]                          
+world_n_loops_per_level: [0, 0]                 
+world_n_tjunctions_per_level: [1, 1]           
 world_n_intersections_per_level: [0, 0]        
-
 
 # ****************************************************************************************************************
 # Repository paths

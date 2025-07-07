@@ -6,6 +6,7 @@ generation_seed: 11
 
 generation_n_worlds: 1
 generation_tile_type: 'b'
+generation_topology: 'parabolic'
 
 world_max_width:  [10, 30]
 world_min_length: [3000, 3000]
