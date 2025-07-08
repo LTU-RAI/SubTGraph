@@ -1,1 +1,0 @@
-# Object instance count: How many instances of each type (with variations) exist.
