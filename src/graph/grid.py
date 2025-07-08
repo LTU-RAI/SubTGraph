@@ -79,7 +79,7 @@ class GridMap():
                 if visitation[idx][jdx] == 0:  # If not visited it is an empty shape
                     self.grid_map[idx][jdx] = EmptyShape()
 
-                elif visitation[idx][jdx] >= 1000:   # If objective node add openings accordingly
+                elif visitation[idx][jdx] >= 10:   # If objective node add openings accordingly
                     self.grid_map[idx][jdx] = NodeShape() 
                     if isFeasible(idx, jdx, {"n": 1, "s": 0, "w": 0, "e": 0}, operator.ge):  self.grid_map[idx][jdx].opening("n")
                     if isFeasible(idx, jdx, {"n": 0, "s": 1, "w": 0, "e": 0}, operator.ge):  self.grid_map[idx][jdx].opening("s")

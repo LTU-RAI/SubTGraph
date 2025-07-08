@@ -2,7 +2,6 @@ import numpy as np
 from utils import *
 
 from scipy.sparse.csgraph import dijkstra
-from graph.cost import create_heatmaps
 from scipy.sparse import csr_matrix
 
 ###

@@ -32,6 +32,7 @@ class ConnectionShape:
         self.connection_type = connection_type
 
         if self.connection_type == "straight":
+            self.id = 2
             self.base =   "              \n" + \
                           "              \n" + \
                           " ____________ \n" + \
@@ -40,6 +41,7 @@ class ConnectionShape:
                           "              \n"
 
         if self.connection_type == "corner":
+            self.id = 3
             self.base =   "              \n" + \
                           "              \n" + \
                           "      _______ \n" + \
@@ -48,6 +50,7 @@ class ConnectionShape:
                           "     |**|     \n"
 
         if self.connection_type == "junction": 
+            self.id = 4
             self.base =   "      **      \n" + \
                           "     |  |     \n" + \
                           "     |  |____ \n" + \
@@ -56,6 +59,7 @@ class ConnectionShape:
                           "     |**|     \n"
 
         if self.connection_type == "intersection":
+            self.id = 5
             self.base =   "      **      \n" + \
                           "     |  |     \n" + \
                           " ____|  |____ \n" + \
@@ -179,6 +183,7 @@ class ConnectionShape:
 class NodeShape:
 
     def __init__(self):
+        self.id = 1
         self.base =  "              \n" + \
                      "   ___**___   \n" + \
                      "  |        |  \n" + \
@@ -191,6 +196,7 @@ class NodeShape:
         self.openings = "e,n,s,w".split(',')
 
     def set_origin_shaft(self):
+        self.id = 11
         self.connection_type = 'shaft'
         self.shape = "              \n" + \
                      "   ___**___   \n" + \
@@ -206,6 +212,7 @@ class NodeShape:
             if direction == "w":   self.shape = west_split(re.split(REGEX, self.shape))
 
     def set_destination_shaft(self):
+        self.id = 111
         self.connection_type = 'shaft_aux'
         self.shape = "              \n" + \
                      "   ___**___   \n" + \
@@ -244,6 +251,7 @@ class NodeShape:
 class EmptyShape:
 
     def __init__(self):
+        self.id = 0
         self.shape =    "              \n" + \
                         "              \n" + \
                         "              \n" + \

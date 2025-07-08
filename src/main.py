@@ -1,4 +1,4 @@
-import os, pickle, math, string, yaml, random, bpy, numpy as np
+import os, pickle, math, string, pickle, random, bpy, numpy as np
 
 from utils import *
 
@@ -42,6 +42,14 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
     level_array = []
     level_origin_array = []
+    level_visitation_array = []
+
+    folder = ''.join(random.choice(string.ascii_letters) for i in range(8))
+
+    exists = 0
+    while exists == 0:
+        try:      os.mkdir(os.path.join('../repo', folder));  exists = 1
+        except:   folder = ''.join(random.choice(string.ascii_letters) for i in range(8))
 
     world_n_levels = np.random.randint(low=topology["world_n_levels"][0], high=topology["world_n_levels"][1]+1, size=1)[0]
     for ldx in range(world_n_levels):   # Reproduce spawn at each level 
@@ -143,13 +151,74 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
 
         level_origin_array.append(node_array[0])
         for node in node_array:  # Set high cost to objective nodes
-            visitation[node[0], node[1]] = 1000
+            visitation[node[0], node[1]] = 10
+
+        for idx in range(visitation.shape[0]):
+            for jdx in range(visitation.shape[1]):
+                visitation[idx, jdx] = 1 if visitation[idx, jdx] > 0 and visitation[idx, jdx] < 10 else visitation[idx, jdx]
+
+        for idx in range(visitation.shape[0]):
+            for jdx in range(visitation.shape[1]):
+                if visitation[idx, jdx] == 10:  continue
+
+                occupancy = 0;  nodes = 0
+                if visitation[max(idx-1, 0), jdx] != 10:                        occupancy += visitation[max(idx-1, 0), jdx] 
+                else:                                                           nodes += 1
+
+                if visitation[min(idx+1, visitation.shape[0]-1), jdx] != 10:    occupancy += visitation[min(idx+1, visitation.shape[0]-1), jdx]
+                else:                                                           nodes += 1
+
+                if visitation[idx, max(jdx-1, 0)] != 10:                        occupancy += visitation[idx, max(jdx-1, 0)]  
+                else:                                                           nodes += 1
+
+                if visitation[idx, min(jdx+1, visitation.shape[1]-1)] != 10:    occupancy += visitation[idx, min(jdx+1, visitation.shape[1]-1)]
+                else:                                                           nodes += 1
+
+                if (occupancy == 0 and nodes < 2) or (occupancy == 1 and nodes == 0):  visitation[idx, jdx] = 0
 
         grid.dijkstra_grid(visitation)  # Create grid from visitation satisfying local constraints
         level_array.append(grid)
+        level_visitation_array.append(visitation)
         print(grid.__str__())
 
-    # exit(0)
+    # continue
+
+    os.mkdir(os.path.join('../repo', folder, 'pkl'))
+
+    matrix = []
+    for ldx in range(world_n_levels):  matrix.append(level_visitation_array[ldx])
+    with open(os.path.join('../repo', folder, "pkl", "subtgraph.topological.pkl"), "wb") as file:
+        pickle.dump(np.array(matrix), file)
+
+    ##
+
+    matrix = []
+    for ldx in range(world_n_levels):
+        visitation = level_visitation_array[ldx].copy()
+        for node in node_array:
+            visitation[node[0], node[1]] = 1
+        matrix.append(visitation)
+
+    with open(os.path.join('../repo', folder, "pkl", "subtgraph.structural.pkl"), "wb") as file:
+        pickle.dump(np.array(matrix), file)
+
+    ##
+
+    matrix = []
+    for ldx in range(world_n_levels):
+        grid_map = level_array[ldx].grid_map
+        visitation = level_visitation_array[ldx].copy()
+
+        for idx in range(visitation.shape[0]):
+            for jdx in range(visitation.shape[1]):
+                visitation[idx, jdx] = grid_map[idx][jdx].id
+
+        matrix.append(visitation)
+
+    with open(os.path.join('../repo', folder, "pkl", "subtgraph.spatial.pkl"), "wb") as file:
+        pickle.dump(np.array(matrix), file)
+
+    # continue
 
     mesh_level_offset_array = []
     mesh_level_rotation_array = []
@@ -280,8 +349,7 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
     merged_obj.scale = (scaleWidth, scaleWidth, scaleLength)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-    filename = ''.join(random.choice(string.ascii_letters) for i in range(8))
-    bpy.ops.wm.obj_export(filepath=os.path.join('../repo', filename + '.obj'))
+    bpy.ops.wm.obj_export(filepath=os.path.join('../repo', folder, 'subtgraph.obj'))
 
     for filename in os.listdir('../tmp'):
         file_path = os.path.join('../tmp', filename)
@@ -290,3 +358,16 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
                 os.remove(file_path)
         except Exception as e:
             print(f'Error deleting {file_path}: {e}')
+
+    temp_dir = bpy.context.preferences.filepaths.temporary_directory
+    if os.path.exists(temp_dir):
+        for file_name in os.listdir(temp_dir):
+            file_path = os.path.join(temp_dir, file_name)
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}: {e}")
+
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
