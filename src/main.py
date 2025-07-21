@@ -74,163 +74,176 @@ for _ in range(topology["generation_n_worlds"]):  # Generate as many worlds as i
     world_n_levels = np.random.randint(low=topology["world_n_levels"][0], high=topology["world_n_levels"][1]+1, size=1)[0]
     for ldx in range(world_n_levels):   # Reproduce spawn at each level 
 
-        grid = GridMap(withDestinationShaft=(world_n_levels > 1), withOriginShaft=(ldx < world_n_levels - 1), level=ldx)  # Create grid map with shaft connection at all levels except the last one
-        visitation = np.zeros([grid_rows, grid_columns])
+        accepted = False
+        while not accepted:
 
-        node_array = []
+            grid = GridMap(withDestinationShaft=(world_n_levels > 1), withOriginShaft=(ldx < world_n_levels - 1), level=ldx)  # Create grid map with shaft connection at all levels except the last one
+            visitation = np.zeros([grid_rows, grid_columns])
 
-        world_n_loops_per_level         = np.random.randint(low=topology["world_n_loops_per_level"][0], high=topology["world_n_loops_per_level"][1]+1, size=1)[0]
-        world_n_tjunctions_per_level    = np.random.randint(low=topology["world_n_tjunctions_per_level"][0], high=topology["world_n_tjunctions_per_level"][1]+1, size=1)[0]
-        world_n_intersections_per_level = np.random.randint(low=topology["world_n_intersections_per_level"][0], high=topology["world_n_intersections_per_level"][1]+1, size=1)[0]
+            node_array = []
 
-        while world_n_loops_per_level > 0 or world_n_tjunctions_per_level > 0 or world_n_intersections_per_level > 0:
-            constraint_set_choice = np.random.randint(low=0, high=3, size=1)[0]
+            world_n_loops_per_level         = np.random.randint(low=topology["world_n_loops_per_level"][0], high=topology["world_n_loops_per_level"][1]+1, size=1)[0]
+            world_n_tjunctions_per_level    = np.random.randint(low=topology["world_n_tjunctions_per_level"][0], high=topology["world_n_tjunctions_per_level"][1]+1, size=1)[0]
+            world_n_intersections_per_level = np.random.randint(low=topology["world_n_intersections_per_level"][0], high=topology["world_n_intersections_per_level"][1]+1, size=1)[0]
 
-            if constraint_set_choice == 0 and world_n_loops_per_level > 0:  # Loops
-                constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
+            if world_n_loops_per_level == 0 and world_n_tjunctions_per_level == 0 and world_n_intersections_per_level == 0:  continue
 
-                if isVisited(constraint_set_choice, constraint, visitation):  continue
-                visitation[constraint[0]-1, constraint[1]] = 1  
-                visitation[constraint[0]+1, constraint[1]] = 1  
-                visitation[constraint[0], constraint[1]-1] = 1  
-                visitation[constraint[0], constraint[1]+1] = 1  
+            nIter = 0
+            while (world_n_loops_per_level > 0 or world_n_tjunctions_per_level > 0 or world_n_intersections_per_level > 0) and nIter < 100:
+                constraint_set_choice = np.random.randint(low=0, high=3, size=1)[0]
 
-                origin = (constraint[0]-1, constraint[1]-1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+                if constraint_set_choice == 0 and world_n_loops_per_level > 0:  # Loops
+                    constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
 
-                origin = (constraint[0]-1,   constraint[1]+1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+                    if isVisited(constraint_set_choice, constraint, visitation):  continue
+                    visitation[constraint[0]-1, constraint[1]] = 1  
+                    visitation[constraint[0]+1, constraint[1]] = 1  
+                    visitation[constraint[0], constraint[1]-1] = 1  
+                    visitation[constraint[0], constraint[1]+1] = 1  
 
-                origin = (constraint[0]+1, constraint[1]-1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+                    origin = (constraint[0]-1, constraint[1]-1)
+                    row_constraint = origin[0];  col_constraint = origin[1]
+                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
 
-                origin = (constraint[0]+1, constraint[1]+1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+                    origin = (constraint[0]-1,   constraint[1]+1)
+                    row_constraint = origin[0];  col_constraint = origin[1]
+                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
 
-                world_n_loops_per_level -= 1
+                    origin = (constraint[0]+1, constraint[1]-1)
+                    row_constraint = origin[0];  col_constraint = origin[1]
+                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
 
-            elif constraint_set_choice == 1 and world_n_tjunctions_per_level > 0:  # T-Junctions
-                constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
-                junction_type = np.random.randint(low=0, high=4, size=1)[0]
+                    origin = (constraint[0]+1, constraint[1]+1)
+                    row_constraint = origin[0];  col_constraint = origin[1]
+                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
 
-                if isVisited(constraint_set_choice, (constraint, junction_type), visitation): continue
-                visitation[constraint[0], constraint[1]] = 1
+                    world_n_loops_per_level -= 1
 
-                if   junction_type == 0:
+                elif constraint_set_choice == 1 and world_n_tjunctions_per_level > 0:  # T-Junctions
+                    constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
+                    junction_type = np.random.randint(low=0, high=4, size=1)[0]
+
+                    if isVisited(constraint_set_choice, (constraint, junction_type), visitation): continue
+                    visitation[constraint[0], constraint[1]] = 1
+
+                    if   junction_type == 0:
+                        origin = (constraint[0]-1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint, visitation)
+
+                        origin = (constraint[0]+1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
+
+                        origin = (constraint[0], constraint[1]+1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+
+                    elif junction_type == 1:
+                        origin = (constraint[0]-1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint, visitation)
+                        
+                        origin = (constraint[0]+1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
+                        
+                        origin = (constraint[0], constraint[1]-1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+
+                    elif junction_type == 2:
+                        origin = (constraint[0], constraint[1]-1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+                        
+                        origin = (constraint[0], constraint[1]+1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+                        
+                        origin = (constraint[0]+1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
+                        
+                    elif junction_type == 3:
+                        origin = (constraint[0], constraint[1]-1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+                        
+                        origin = (constraint[0], constraint[1]+1)
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+                        
+                        origin = (constraint[0]-1, constraint[1])
+                        row_constraint = origin[0];  col_constraint = origin[1]
+                        updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0], col_constraint,         visitation)
+
+                    world_n_tjunctions_per_level -= 1
+
+                elif constraint_set_choice == 2 and world_n_intersections_per_level > 0:  # Intersections
+                    constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
+
+                    if isVisited(constraint_set_choice, constraint, visitation):  continue
+                    visitation[constraint[0], constraint[1]] = 1
+
                     origin = (constraint[0]-1, constraint[1])
                     row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint, visitation)
-
-                    origin = (constraint[0]+1, constraint[1])
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
-
-                    origin = (constraint[0], constraint[1]+1)
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
-
-                elif junction_type == 1:
-                    origin = (constraint[0]-1, constraint[1])
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint, visitation)
+                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint,                                                     visitation)
                     
                     origin = (constraint[0]+1, constraint[1])
                     row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
+                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint,                                                     visitation)
                     
                     origin = (constraint[0], constraint[1]-1)
                     row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
-
-                elif junction_type == 2:
-                    origin = (constraint[0], constraint[1]-1)
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
+                    updateVisitation(origin, row_constraint,                                                     np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
                     
                     origin = (constraint[0], constraint[1]+1)
                     row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
-                    
-                    origin = (constraint[0]+1, constraint[1])
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint, visitation)
-                    
-                elif junction_type == 3:
-                    origin = (constraint[0], constraint[1]-1)
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
-                    
-                    origin = (constraint[0], constraint[1]+1)
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, row_constraint, np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
-                    
-                    origin = (constraint[0]-1, constraint[1])
-                    row_constraint = origin[0];  col_constraint = origin[1]
-                    updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0], col_constraint,         visitation)
+                    updateVisitation(origin, row_constraint,                                                     np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
 
-                world_n_tjunctions_per_level -= 1
+                    world_n_intersections_per_level -= 1
 
-            elif constraint_set_choice == 2 and world_n_intersections_per_level > 0:  # Intersections
-                constraint = np.random.randint(low=3, high=grid_rows-3, size=2)
+                nIter += 1
 
-                if isVisited(constraint_set_choice, constraint, visitation):  continue
-                visitation[constraint[0], constraint[1]] = 1
+            if nIter >= 100:  continue
 
-                origin = (constraint[0]-1, constraint[1])
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=0, high=row_constraint-1, size=1)[0],         col_constraint,                                                     visitation)
-                
-                origin = (constraint[0]+1, constraint[1])
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, np.random.randint(low=row_constraint+1, high=grid_rows, size=1)[0], col_constraint,                                                     visitation)
-                
-                origin = (constraint[0], constraint[1]-1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, row_constraint,                                                     np.random.randint(low=0, high=col_constraint-1, size=1)[0],         visitation)
-                
-                origin = (constraint[0], constraint[1]+1)
-                row_constraint = origin[0];  col_constraint = origin[1]
-                updateVisitation(origin, row_constraint,                                                     np.random.randint(low=col_constraint+1, high=grid_rows, size=1)[0], visitation)
+            for node in node_array:  # Set high cost to objective nodes
+                visitation[node[0], node[1]] = 10
 
-                world_n_intersections_per_level -= 1
+            for idx in range(visitation.shape[0]):
+                for jdx in range(visitation.shape[1]):
+                    visitation[idx, jdx] = 1 if visitation[idx, jdx] > 0 and visitation[idx, jdx] < 10 else visitation[idx, jdx]
+
+            for idx in range(visitation.shape[0]):
+                for jdx in range(visitation.shape[1]):
+                    if visitation[idx, jdx] == 10:  continue
+
+                    occupancy = 0;  nodes = 0
+                    if visitation[max(idx-1, 0), jdx] != 10:                        occupancy += visitation[max(idx-1, 0), jdx] 
+                    else:                                                           nodes += 1
+
+                    if visitation[min(idx+1, visitation.shape[0]-1), jdx] != 10:    occupancy += visitation[min(idx+1, visitation.shape[0]-1), jdx]
+                    else:                                                           nodes += 1
+
+                    if visitation[idx, max(jdx-1, 0)] != 10:                        occupancy += visitation[idx, max(jdx-1, 0)]  
+                    else:                                                           nodes += 1
+
+                    if visitation[idx, min(jdx+1, visitation.shape[1]-1)] != 10:    occupancy += visitation[idx, min(jdx+1, visitation.shape[1]-1)]
+                    else:                                                           nodes += 1
+
+                    if (occupancy == 0 and nodes < 2) or (occupancy == 1 and nodes == 0):  visitation[idx, jdx] = 0
+
+            grid.dijkstra_grid(visitation)  # Create grid from visitation satisfying local constraints
+            print(grid.__str__())
+            userAnswer = input("Press enter to continue, or type 'x' to remake this level: ")
+            if userAnswer.lower() != 'x':  accepted = True
 
         ###
 
         level_origin_array.append(node_array[0])
-        for node in node_array:  # Set high cost to objective nodes
-            visitation[node[0], node[1]] = 10
-
-        for idx in range(visitation.shape[0]):
-            for jdx in range(visitation.shape[1]):
-                visitation[idx, jdx] = 1 if visitation[idx, jdx] > 0 and visitation[idx, jdx] < 10 else visitation[idx, jdx]
-
-        for idx in range(visitation.shape[0]):
-            for jdx in range(visitation.shape[1]):
-                if visitation[idx, jdx] == 10:  continue
-
-                occupancy = 0;  nodes = 0
-                if visitation[max(idx-1, 0), jdx] != 10:                        occupancy += visitation[max(idx-1, 0), jdx] 
-                else:                                                           nodes += 1
-
-                if visitation[min(idx+1, visitation.shape[0]-1), jdx] != 10:    occupancy += visitation[min(idx+1, visitation.shape[0]-1), jdx]
-                else:                                                           nodes += 1
-
-                if visitation[idx, max(jdx-1, 0)] != 10:                        occupancy += visitation[idx, max(jdx-1, 0)]  
-                else:                                                           nodes += 1
-
-                if visitation[idx, min(jdx+1, visitation.shape[1]-1)] != 10:    occupancy += visitation[idx, min(jdx+1, visitation.shape[1]-1)]
-                else:                                                           nodes += 1
-
-                if (occupancy == 0 and nodes < 2) or (occupancy == 1 and nodes == 0):  visitation[idx, jdx] = 0
-
-        grid.dijkstra_grid(visitation)  # Create grid from visitation satisfying local constraints
         level_array.append(grid)
         level_visitation_array.append(visitation)
-        print(grid.__str__())
 
     # continue
 
