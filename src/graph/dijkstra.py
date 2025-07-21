@@ -9,6 +9,58 @@ from scipy.sparse import csr_matrix
 toIndex = lambda row, column: row * grid_columns + column
 toPair  = lambda index: divmod(index, grid_columns)
 
+def harmonic_signal_matrix(start, end, nodes, grid_shape):
+    """
+    Create a matrix with a harmonic signal from start to end point.
+    
+    Parameters:
+    - start: tuple (x0, y0)
+    - end: tuple (x1, y1)
+    - nodes: int, number of nodes (zero crossings)
+    - grid_shape: tuple (height, width) of the matrix
+    
+    Returns:
+    - matrix: 2D numpy array with 1s on the harmonic path
+    """
+    x0, y0 = start
+    x1, y1 = end
+
+    # Number of samples along the path
+    num_points = int(np.hypot(x1 - x0, y1 - y0) * 4)  # Increase for smoother curves
+    
+    # Linear path (t from 0 to 1)
+    t = np.linspace(0, 1, num_points)
+    x = x0 + (x1 - x0) * t
+    y = y0 + (y1 - y0) * t
+
+    # Direction perpendicular to the path
+    dx = x1 - x0
+    dy = y1 - y0
+    length = np.hypot(dx, dy)
+    if length == 0:
+        raise ValueError("Start and end points cannot be the same")
+    perp_dx = -dy / length
+    perp_dy = dx / length
+
+    # Apply sine wave offset (amplitude scales with distance for visibility)
+    amplitude = min(grid_shape) / 20  # You can adjust this
+    frequency = nodes * np.pi  # Full sine cycles across the path
+    offset = amplitude * np.sin(frequency * t)
+
+    x_wave = x + offset * perp_dx
+    y_wave = y + offset * perp_dy
+
+    # Initialize grid
+    matrix = np.ones(grid_shape) * np.inf # np.zeros(grid_shape, dtype=int)
+
+    # Map wave to grid
+    for xi, yi in zip(x_wave, y_wave):
+        ix, iy = int(round(xi)), int(round(yi))
+        if 0 <= ix < grid_shape[1] and 0 <= iy < grid_shape[0]:
+            matrix[iy, ix] = 1
+
+    return matrix
+
 def extract_path(predecessors, target):
     path = []
     i = target
@@ -41,131 +93,11 @@ def cost_adjacency_matrix(cost_grid):
 
     return adj_matrix
 
-
-def linearPath(matrix_shape, initial, desired, cost=np.array([])):
-    cost = np.ones(matrix_shape) * np.inf if len(cost) == 0 else cost
-
-    if initial[0] == desired[0]:
-        row = desired[0]
-        sign = 1 if desired[1] > initial[1] else -1
-        for col in range(initial[1] + sign, desired[1], sign):
-            cost[row, col] = 1
-
-    elif initial[1] == desired[1]:
-        col = desired[1]
-        sign = 1 if desired[0] > initial[0] else -1
-        for row in range(initial[0] + sign, desired[0], sign):
-            cost[row, col] = 1
-
-    return cost
-
-
-def parabolicPath(matrix_shape, initial, desired, cost=np.array([])):
-    cost = np.ones(matrix_shape) * np.inf if len(cost) == 0 else cost
-
-    if initial[0] == desired[0]:
-        row = desired[0]
-        sign = 1 if desired[1] > initial[1] else -1
-        
-        distance = abs(desired[1] - initial[1]) - 1
-        if distance%2 == 0:
-            level = 1;  top = 0; parabolic_sign = 1;  check = lambda level: level <= (distance-2)//2
-            for col in range(initial[1] + sign, desired[1], sign):
-                if check(level):  # Escalate
-                    cost[max(row - level, 0), col] = 1
-                    cost[min(row + level, matrix_shape[0]-1), col] = 1
-                    level += parabolic_sign
-                else: # Retain
-                    cost[max(row - level, 0), col] = 1
-                    cost[min(row + level, matrix_shape[0]-1), col] = 1
-                    top += 1
-
-                    if top == 2:
-                        level -= 1;  parabolic_sign = -1;  check = lambda level: level > 0
-        else:
-            level = 1;  parabolic_sign = 1;  check = lambda level: level <= distance//2
-            for col in range(initial[1] + sign, desired[1], sign):
-                if check(level) :  # Escalate
-                    cost[max(row - level, 0), col] = 1
-                    cost[min(row + level, matrix_shape[0]-1), col] = 1
-                    level += parabolic_sign
-                else: # Retain
-                    cost[max(row - level, 0), col] = 1
-                    cost[min(row + level, matrix_shape[0]-1), col] = 1
-                    level -= 1;  parabolic_sign = -1;  check = lambda level: level > 0
-
-    elif initial[1] == desired[1]:
-        col = desired[1]
-        sign = 1 if desired[0] > initial[0] else -1
-
-        distance = abs(desired[0] - initial[0]) - 1
-        if distance%2 == 0:
-            level = 1;  top = 0; parabolic_sign = 1;  check = lambda level: level <= (distance-2)//2
-            for row in range(initial[0] + sign, desired[0], sign):
-                if check(level):  # Escalate
-                    cost[row, max(col - level, 0)] = 1
-                    cost[row, min(col + level, matrix_shape[0]-1)] = 1
-                    level += parabolic_sign
-                else: # Retain
-                    cost[row, max(col - level, 0)] = 1
-                    cost[row, min(col + level, matrix_shape[0]-1)] = 1
-                    top += 1
-                    if top == 2:
-                        level -= 1;  parabolic_sign = -1;  check = lambda level: level > 0
-        else:
-            level = 1;  parabolic_sign = 1;  check = lambda level: level <= distance//2
-            for row in range(initial[0] + sign, desired[0], sign):
-                if check(level) :  # Escalate
-                    cost[row, max(col - level, 0)] = 1
-                    cost[row, min(col + level, matrix_shape[0]-1)] = 1
-                    level += parabolic_sign
-                else: # Retain
-                    cost[row, max(col - level, 0)] = 1
-                    cost[row, min(col + level, matrix_shape[0]-1)] = 1
-                    level -= 1;  parabolic_sign = -1;  check = lambda level: level > 0
-
-    return cost
-
-
-def sinePath(matrix_shape, initial, desired, cost=np.array([])):
-    cost = np.ones(matrix_shape) * np.inf if len(cost) == 0 else cost
-
-    if initial[0] == desired[0]:
-        row = desired[0]
-        sign = 1 if desired[1] > initial[1] else -1
-
-        for col in range(initial[1] + sign, desired[1], sign):
-            if abs((initial[1] + sign) - col)%2 != 0:  # Odd
-                cost[row, col] = 1
-            else: # Even
-                cost[max(row - 1, 0), col] = 1
-                cost[min(row + 1, matrix_shape[0]-1), col] = 1
-    elif initial[1] == desired[1]:
-        col = desired[1]
-        sign = 1 if desired[0] > initial[0] else -1
-
-        for row in range(initial[0] + sign, desired[0], sign):
-            if abs((initial[0] + sign) - row)%2 != 0:  # Odd
-                cost[row, col] = 1
-            else: # Even
-                cost[row, max(col - 1, 0)] = 1
-                cost[row, min(col + 1, matrix_shape[0]-1)] = 1
-
-    return cost
-
 ###
 
 def dijkstraSolver(initial_node, desired_node, grid_size):
 
-    cost_grid = np.array([])
-
-    if topology['generation_topology'] == 'linear':      cost_grid = linearPath((grid_size, grid_size), (initial_node[0], initial_node[1]), (desired_node[0], desired_node[1]), cost_grid)
-    if topology['generation_topology'] == 'parabolic':   cost_grid = parabolicPath((grid_size, grid_size), (initial_node[0], initial_node[1]), (desired_node[0], desired_node[1]), cost_grid)
-    if topology['generation_topology'] == 'sine':        cost_grid = sinePath((grid_size, grid_size), (initial_node[0], initial_node[1]), (desired_node[0], desired_node[1]), cost_grid)
-
-    cost_grid[initial_node[0], initial_node[1]] = np.inf
-    cost_grid[desired_node[0], desired_node[1]] = np.inf
-
+    cost_grid = harmonic_signal_matrix((initial_node[1], initial_node[0]), (desired_node[1], desired_node[0]), 0, (grid_size, grid_size))
     cost_grid = csr_matrix(cost_adjacency_matrix(cost_grid))
 
     initial_node = toIndex(*initial_node)
