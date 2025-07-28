@@ -1,13 +1,20 @@
 import math, random, string, yaml, numpy as np
 
+from datetime import datetime
 from graph.shape import EmptyShape
 
 ###
 
-with open('../config/topology/operational.yaml', 'r') as file:
-    topology = yaml.safe_load(file)
+with open('../config/generation/custom.yaml', 'r') as file:
+    config = yaml.safe_load(file)
 
-grid_rows = grid_columns = int(math.sqrt(np.random.randint(low=topology["world_min_length"][0], high=topology["world_min_length"][1]+1, size=1)[0]))
+SUBTGRAPH_PATH = config["repository_path"]
+
+SAVE_MESH   = config["generation_save_mesh"]
+LOAD_MATRIX = config["generation_load_matrix"]
+SAVE_MATRIX = config["generation_save_matrix"]
+
+grid_rows = grid_columns = int(math.sqrt(np.random.randint(low=config["world_min_length"][0], high=config["world_min_length"][1]+1, size=1)[0]))
 
 # Checking the openings of the asset
 isOpenWest =     lambda openings:   "w" in openings
@@ -30,4 +37,10 @@ isLimitSouthEast  = lambda idx, jdx: isLimitSouth(idx) and isLimitEast(jdx)
 isEmptyShape =   lambda obj:     isinstance(obj, EmptyShape)
 
 def get_random_id():
-        return ''.join(random.choice(string.ascii_letters) for i in range(32))
+    return ''.join(random.choice(string.ascii_letters) for i in range(32))
+
+def get_datetime_id(prefix="subtgraph"):
+    # Get current date and time
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # Combine prefix with the formatted date and time
+    return f"{prefix}_{current_time}"
