@@ -18,7 +18,7 @@ class GridMap():
         self.originShaftNode = None                         # Shaft node position in the grid map
         self.destinationShaftNode = None                    # Destination shaft node position in the grid map
 
-    def dijkstra_grid(self, visitation):
+    def toShapes(self, visitation):
 
         getValueNorth = lambda matrix, idx, jdx: matrix[idx-1][jdx]
         getValueSouth = lambda matrix, idx, jdx: matrix[idx+1][jdx]
