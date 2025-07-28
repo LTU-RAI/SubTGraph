@@ -6,15 +6,18 @@ generation_seed: 11
 
 generation_n_worlds: 1
 generation_tile_type: 'b'
-generation_topology: 'parabolic'
+generation_level_control: True
 
-world_max_width:  [40, 50]
-world_min_length: [500, 1000]
+generation_topology: 'linear'
+generation_route_harmonic: -1
 
-world_n_levels: [1, 5]                          
+world_max_width:  [80, 100]
+world_min_length: [2000, 4000]
+
+world_n_levels: [3, 3]                          
 world_n_loops_per_level: [0, 0]                 
-world_n_tjunctions_per_level: [1, 2]           
-world_n_intersections_per_level: [1, 2]         
+world_n_tjunctions_per_level: [0, 2]           
+world_n_intersections_per_level: [0, 2]         
 
 
 # ****************************************************************************************************************
@@ -48,21 +51,28 @@ env_asset_list_type_a:
   corner:       
     parameters: 'corner,e,s'
     assets: [
-      "cave_corner_01_type_b",
-      "cave_corner_02_type_b",
+      "cave_corner_01_type_a",
+      "cave_corner_03_type_a",
     ]
 
   straight:     
     parameters: 'straight,e,w'
     assets: [
-      "cave_cavern_type_a",
       "cave_split_type_a",
+      "cave_straight_type_a",
+    ]
+
+  shaft: 
+    parameters: 'shaft,e,n,s,w'
+    assets: [
+      "cave_elevation_straight_type_a",
+      "cave_elevation_02_type_a"
     ]
 
   junction:     
     parameters: 'junction,e,n,s'
     assets: [
-      "cave_3_way_01_type_b"
+      "cave_3_way_type_a"
     ]
 
   intersection: 

@@ -2,19 +2,23 @@
 # Spatial description of the environment
 
 generation_folder: '/home/fernand0labra/rai-subtgraph/data/'
+generation_seed: 11
+
 generation_n_worlds: 1
-
-generation_seed: 11              
 generation_tile_type: 'b'
-generation_topology: 'parabolic'
+generation_level_control: True
 
-world_max_width:  [50, 50]
-world_min_length: [100, 100]
+generation_topology: 'sine'
+generation_route_harmonic: -1
+
+world_max_width:  [50, 100]
+world_min_length: [1000, 1000]
 
 world_n_levels: [1, 1]                          
-world_n_loops_per_level: [0, 0]                 
-world_n_tjunctions_per_level: [1, 1]           
-world_n_intersections_per_level: [0, 0]        
+world_n_loops_per_level: [0, 2]                 
+world_n_tjunctions_per_level: [0, 2]           
+world_n_intersections_per_level: [0, 2]    
+
 
 # ****************************************************************************************************************
 # Repository paths
