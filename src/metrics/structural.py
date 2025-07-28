@@ -2,6 +2,7 @@ import seaborn as sns
 import os, pickle, torch
 import matplotlib.pyplot as plt
 
+from utils import *
 from torchmetrics.image import StructuralSimilarityIndexMeasure
 
 ###
@@ -25,7 +26,7 @@ def list_and_unpickle(directory: str):
 ###
 
 ssim_total = []
-data = list_and_unpickle('../repo/metrics/sine')
+data = list_and_unpickle(SUBTGRAPH_PATH + '/data/metrics/sine')
 
 for idx in range(len(data)):
     ssim_elem_total = []

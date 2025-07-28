@@ -2,6 +2,7 @@ import os, torch, pickle
 import matplotlib.pyplot as plt
 import seaborn as sns, numpy as np
 
+from utils import *
 from scipy.ndimage import rotate
 from torchmetrics.image import StructuralSimilarityIndexMeasure
 
@@ -62,7 +63,7 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
         ssim_symmetry_horiz = 0
         ssim_symmetry_vert = 0
         ssim_rotation = 0
-        data = list_and_unpickle('../repo/metrics/' + repo, 'structural')
+        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/metrics/' + repo, 'structural')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
@@ -74,7 +75,7 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
             ssim_rotation += ssim_rot
             
         sns.barplot(x=['Horizontal', 'Vertical', 'Rotation'], y=[ssim_symmetry_horiz/len(data), ssim_symmetry_vert/len(data), ssim_rot/len(data)], ax=axes[rdx], palette='rocket')
-        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' Topology')
+        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' generation')
         axes[rdx].set_ylabel('SSIM')
         axes[rdx].set_ylim(0, 0.25)
 
@@ -107,7 +108,7 @@ if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corri
         histogram = {}
         for value in value_types.keys():  histogram.update({value : []})
 
-        data = list_and_unpickle('../repo/probabilities/1.1.1.' + repo, 'spatial')
+        data = list_and_unpickle(SUBTGRAPH_PATH + '/repo/probabilities/1.1.1.' + repo, 'spatial')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
@@ -131,7 +132,7 @@ if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corri
         for patch, color in zip(hist_data.patches, colors):
             patch.set_facecolor(color)
 
-        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' Topology')
+        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' generation')
         axes[rdx].set_ylabel('Probability (%)')
 
         bin_edges = hist_data.patches[0].get_x()      # Get the x-position of the first bar
