@@ -1,4 +1,6 @@
-import os, torch, pickle, numpy as np
+import os, torch, pickle
+import matplotlib.pyplot as plt
+import seaborn as sns, numpy as np
 
 from scipy.ndimage import rotate
 from torchmetrics.image import StructuralSimilarityIndexMeasure
@@ -32,7 +34,7 @@ def symmetry_metric(mat):
     ssim_horiz = ssim(mat.reshape((1, *mat.shape)), mat_horiz_mirror.reshape((1, *mat_horiz_mirror.shape)))
     ssim_vert  = ssim(mat.reshape((1, *mat.shape)), mat_vert_mirror.reshape((1, *mat_vert_mirror.shape)))
 
-    return (ssim_horiz + ssim_vert) / 2.0
+    return ssim_horiz, ssim_vert
 
 
 def rotation_symmetry_metric(mat):
@@ -47,69 +49,98 @@ def rotation_symmetry_metric(mat):
 
 ###
 
-# Symmetry vs. asymmetry: Higher asymmetry may correlate with more “natural” or rich environments.
+if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more “natural” or rich environments.
 
-# For a matrix representing occupancy (e.g., a 2D or 3D grid where each element is either 0 or 1), symmetry typically means that the distribution of occupied (1) and unoccupied (0) cells is mirrored in some way. 
-# Asymmetry would then imply a distribution that is not mirrored along one or more axes.
+    ssim_symmetry_total = []
+    ssim_rotation_total = []
 
-# * **Mirror Symmetry**: Symmetry around an axis, either horizontal or vertical (for 2D matrices).
-# * **Rotational Symmetry**: Symmetry around a center, where rotating the matrix by 90°, 180°, etc., results in the same structure.
-# * **Reflectional Symmetry**: Symmetry across a plane (for 3D matrices).
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-# To create a metric for symmetry, you can compute how similar the matrix is to its mirrored or rotated counterparts. 
-# If the matrix is highly symmetric, this metric should yield a high value (close to 1), and for asymmetry, the value should be lower.
+    repo_array = ['linear', 'parabolic', 'sine']
+    for rdx, repo in enumerate(repo_array):
 
-# In environments where asymmetry is expected (such as natural landscapes, city layouts, or complex systems), this metric can help assess whether the space is "rich" or "complex." 
-# If a matrix is highly asymmetric, it might be indicative of such a "natural" structure, while perfectly symmetric matrices might represent artificial or overly structured environments.
+        ssim_symmetry_horiz = 0
+        ssim_symmetry_vert = 0
+        ssim_rotation = 0
+        data = list_and_unpickle('../repo/metrics/' + repo, 'structural')
+        for idx in range(len(data)):
+            mat = torch.from_numpy(data[idx])
 
+            ssim_horiz, ssim_vert = symmetry_metric(mat)
+            ssim_symmetry_horiz += ssim_horiz.item()
+            ssim_symmetry_vert += ssim_vert.item()
 
-ssim_symmetry_total = 0
-ssim_rotation_total = 0
+            ssim_rot = rotation_symmetry_metric(mat)
+            ssim_rotation += ssim_rot
+            
+        sns.barplot(x=['Horizontal', 'Vertical', 'Rotation'], y=[ssim_symmetry_horiz/len(data), ssim_symmetry_vert/len(data), ssim_rot/len(data)], ax=axes[rdx], palette='rocket')
+        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' Topology')
+        axes[rdx].set_ylabel('SSIM')
+        axes[rdx].set_ylim(0, 0.25)
 
-data = list_and_unpickle('../repo', 'structural')
-for idx in range(len(data)):
-    mat = torch.from_numpy(data[idx])
+        # ssim_symmetry_total.append(ssim_symmetry)
+        # ssim_rotation_total.append(ssim_rotation)
 
-    ssim_symmetry_total += symmetry_metric(mat)
-    ssim_rotation_total += rotation_symmetry_metric(mat)
+    # print(f"Mirror Symmetry average over {len(data)} instances:\t{ssim_symmetry_total/len(data)}")
+    # print(f"Rotation Symmetry average over {len(data)} instances:\t{ssim_rotation_total/len(data)}\n")
 
-print(f"Mirror Symmetry average over {len(data)} instances:\t{ssim_symmetry_total/len(data)}")
-print(f"Rotation Symmetry average over {len(data)} instances:\t{ssim_rotation_total/len(data)}\n")
+    plt.tight_layout()
+    plt.show()
 
 ###
 
-# Topological diversity: Count and type of spaces (e.g., rooms, corridors, outdoor/indoor).
+if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corridors, outdoor/indoor).
 
-value_types = {
-    1:   'Node',
-    11:  'Origin Shaft',
-    111: 'Destination Shaft',
-             
-    2 :  'Straight',
-    3 :  'Corner',
-    4 :  'Junction',
-    5 :  'Intersection'
-}
+    value_types = {
+        1:   'Node',
+        2 :  'Straight',
+        3 :  'Corner',
+        4 :  'Junction',
+        5 :  'Intersection'
+    }
 
-histogram = {}
-for value in value_types.keys():  histogram.update({value : 0})
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-data = list_and_unpickle('../repo', 'spatial')
-for idx in range(len(data)):
-    mat = torch.from_numpy(data[idx])
+    repo_array = ['linear', 'parabolic', 'sine']
+    for rdx, repo in enumerate(repo_array):
 
-    for idx in range(mat.shape[2]):
-        for jdx in range(mat.shape[1]):
-            for kdx in range(mat.shape[0]):
-                if mat[kdx, jdx, idx] == 0:  continue
-                key = int(mat[kdx, jdx, idx])
-                histogram.update({key: histogram.get(key) + 1})
+        histogram = {}
+        for value in value_types.keys():  histogram.update({value : []})
 
-print(f"Average Topological Appearances:\n \
-        Node: {histogram.get(1) / len(data)} \
-        Origin Shaft: {histogram.get(11) / len(data)} \
-        Destination Shaft: {histogram.get(111) / len(data)} \
-        Straight: {histogram.get(2) / len(data)} \
-        Corner: {histogram.get(3) / len(data)} \
-        Junction: {histogram.get(4) / len(data)} \
-        Intersection: {histogram.get(5) / len(data)}\n")
+        data = list_and_unpickle('../repo/probabilities/1.1.1.' + repo, 'spatial')
+        for idx in range(len(data)):
+            mat = torch.from_numpy(data[idx])
+
+            for idx in range(mat.shape[2]):
+                for jdx in range(mat.shape[1]):
+                    for kdx in range(mat.shape[0]):
+                        if mat[kdx, jdx, idx] == 0 or mat[kdx, jdx, idx] == 11 or mat[kdx, jdx, idx] == 111:  continue
+                        key = int(mat[kdx, jdx, idx])
+                        histogram.update({key: histogram.get(key) + [key]})
+
+        values = list(histogram.values())
+        values_np = np.array([], dtype=np.int8)
+
+        for l in values:
+            for v in l:
+                values_np = np.append(values_np, v)
+
+        colors = sns.color_palette("rocket", len(value_types.keys()))
+        hist_data = sns.histplot(values_np, bins=range(min(values_np), max(values_np) + 2), kde=False, ax=axes[rdx], stat="percent")
+
+        for patch, color in zip(hist_data.patches, colors):
+            patch.set_facecolor(color)
+
+        axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' Topology')
+        axes[rdx].set_ylabel('Probability (%)')
+
+        bin_edges = hist_data.patches[0].get_x()      # Get the x-position of the first bar
+        bin_width = hist_data.patches[0].get_width()  # Get the width of the bars
+        xticks_positions = [bin_edges + bin_width / 2 for bin_edges in range(min(values_np), max(values_np) + 1)]
+
+        axes[rdx].set_xticks(xticks_positions, [str(i) for i in range(min(values_np), max(values_np) + 1)])
+        axes[rdx].set_xticklabels([value_types[key] for key in value_types.keys()])
+        axes[rdx].set_ylim(0, 60)
+
+    plt.tight_layout()
+    plt.show()

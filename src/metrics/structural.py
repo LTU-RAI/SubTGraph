@@ -1,4 +1,7 @@
+import seaborn as sns
 import os, pickle, torch
+import matplotlib.pyplot as plt
+
 from torchmetrics.image import StructuralSimilarityIndexMeasure
 
 ###
@@ -21,24 +24,27 @@ def list_and_unpickle(directory: str):
 
 ###
 
-ssim_total = 0
-data = list_and_unpickle('../repo')
+ssim_total = []
+data = list_and_unpickle('../repo/metrics/sine')
 
 for idx in range(len(data)):
-    ssim_elem_total = 0
+    ssim_elem_total = []
 
     mat1 = torch.from_numpy(data[idx])
     mat1 = mat1.reshape((1, *mat1.shape))
 
-    data_without_idx = data[:idx] + data[idx+1:]
-    for jdx in range(len(data_without_idx)):
+    for jdx in range(len(data)):
 
-        mat2 = torch.from_numpy(data_without_idx[jdx])
+        mat2 = torch.from_numpy(data[jdx])
         mat2 = mat2.reshape((1, *mat2.shape))
 
         ssim = StructuralSimilarityIndexMeasure(data_range=1.0)
-        ssim_elem_total += ssim(mat1, mat2)
+        ssim_elem_total.append(ssim(mat1, mat2))
 
-    ssim_total += ssim_elem_total / len(data_without_idx)
+    ssim_total.append(ssim_elem_total)
 
-print(f'SSIM average over {len(data)} instances: {ssim_total/len(data)}\n')
+plt.figure(figsize=(8, 6))
+sns.heatmap(ssim_total, annot=False, fmt='g')
+plt.xlabel('Graph ID')
+plt.ylabel('Graph ID')
+plt.show()
