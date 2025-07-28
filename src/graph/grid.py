@@ -106,10 +106,10 @@ class GridMap():
                                 self.grid_map[idx][jdx].set_destination_shaft()
 
                 else:
-                    corner_params       = topology["env_asset_list_type_b"]["corner"]["parameters"].split(',')
-                    straight_params     = topology["env_asset_list_type_b"]["straight"]["parameters"].split(',')
-                    junction_params     = topology["env_asset_list_type_b"]["junction"]["parameters"].split(',')
-                    intersection_params = topology["env_asset_list_type_b"]["intersection"]["parameters"].split(',')
+                    corner_params       = config["env_asset_list_type_b"]["corner"]["parameters"].split(',')
+                    straight_params     = config["env_asset_list_type_b"]["straight"]["parameters"].split(',')
+                    junction_params     = config["env_asset_list_type_b"]["junction"]["parameters"].split(',')
+                    intersection_params = config["env_asset_list_type_b"]["intersection"]["parameters"].split(',')
 
                     # Straight connection
                     if   isFeasible(idx, jdx, {"n": 0, "s": 0, "w": 1, "e": 1}): populate_connections(idx, jdx, straight_params, angle=0)
