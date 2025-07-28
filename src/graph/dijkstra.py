@@ -97,7 +97,14 @@ def cost_adjacency_matrix(cost_grid):
 
 def dijkstraSolver(initial_node, desired_node, grid_size):
 
-    cost_grid = harmonic_signal_matrix((initial_node[1], initial_node[0]), (desired_node[1], desired_node[0]), 0, (grid_size, grid_size))
+    if config["generation_route_harmonic"] == -1:
+        if   config["generation_topology"] == "linear":     node_number = 0
+        elif config["generation_topology"] == "parabolic":  node_number = 1
+        elif config["generation_topology"] == "sine":       node_number = 2
+    else:
+        node_number = config["generation_route_harmonic"]
+
+    cost_grid = harmonic_signal_matrix((initial_node[1], initial_node[0]), (desired_node[1], desired_node[0]), node_number, (grid_size, grid_size))
     cost_grid = csr_matrix(cost_adjacency_matrix(cost_grid))
 
     initial_node = toIndex(*initial_node)
