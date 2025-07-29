@@ -1,4 +1,4 @@
-# SubTGraph++: Dijkstra Route Descriptions on Structurally Constrained Topologies for Subterranean World Generation
+# SubTGraph: Dijkstra Route Descriptions on Structurally Constrained Topologies for Subterranean World Generation
 
 TODO
 Image
