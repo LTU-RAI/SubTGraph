@@ -79,12 +79,6 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
         axes[rdx].set_ylabel('SSIM')
         axes[rdx].set_ylim(0, 0.25)
 
-        # ssim_symmetry_total.append(ssim_symmetry)
-        # ssim_rotation_total.append(ssim_rotation)
-
-    # print(f"Mirror Symmetry average over {len(data)} instances:\t{ssim_symmetry_total/len(data)}")
-    # print(f"Rotation Symmetry average over {len(data)} instances:\t{ssim_rotation_total/len(data)}\n")
-
     plt.tight_layout()
     plt.show()
 
