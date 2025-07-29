@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 dependencies = [
-    'PyYAML==5.4.1',
+    'PyYAML',
     'numpy==1.26.4',
     'mathutils==3.3.0',
     'bpy==4.0.0',
@@ -9,7 +9,7 @@ dependencies = [
     'matplotlib==3.5.1',
     'scipy==1.15.3',
     'torchmetrics==1.7.4',
-    'torch==2.7.0+cu118',
+    'torch',
 ]
 
 setup(
