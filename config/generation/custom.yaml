@@ -7,7 +7,6 @@ repository_path: '/home/fernand0labra/rai-subtgraph'
 # Spatial description of the environment
 
 generation_seed: 11
-generation_output: False
 
 generation_save_folder: 'data'
 generation_load_folder: 'data/subtgraph_2025-07-28_14-31-05'
@@ -18,7 +17,7 @@ generation_save_mesh: True
 
 generation_n_worlds: 1
 generation_tile_type: 'b'
-generation_level_control: False
+generation_level_control: True
 
 generation_topology: 'sine'
 generation_route_harmonic: -1
