@@ -59,7 +59,6 @@ TODO
 # This is my code
 ```
 <img src="imgs/Figure8.jpg"/>
-<img src="imgs/Figure9.jpg"/>
 
 #### Texture Definition
 TODO
