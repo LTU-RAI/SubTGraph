@@ -5,7 +5,7 @@ from mathutils import Vector
 
 from build import FactoryObj
 from graph.grid import GridMap
-from graph.dijkstra import dijkstraSolver
+from graph.dijkstra import dijkstra_solver
 
 ###
 
@@ -130,7 +130,7 @@ def updateVisitation(origin: tuple, row: int, col: int, visitation: np.array) ->
     check, contiguous = isContiguous(node, node_array)
     if check:  node = contiguous
     else:      node_array.append(node)
-    visitation += dijkstraSolver(origin, node, grid_rows)[1]
+    visitation += dijkstra_solver(origin, node, grid_rows)[1]
 
 ###
 
@@ -157,7 +157,7 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
                 grid = GridMap(withDestinationShaft=(world_n_levels > 1), withOriginShaft=(ldx < world_n_levels - 1), level=ldx)
                 grid.toShapes(visitation)  # Transform visitation to object-based matrix
                 
-                if config["generation_output"]:  print(grid.__str__())  # Output grid if specified
+                if config["generation_level_control"]:  print(grid.__str__())  # Output grid if specified
 
                 # Find first node for mesh generation
                 updated = False
@@ -190,7 +190,7 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
                     world_n_tjunctions_per_level    = np.random.randint(low=config["world_n_tjunctions_per_level"][0], high=config["world_n_tjunctions_per_level"][1]+1, size=1)[0]
                     world_n_intersections_per_level = np.random.randint(low=config["world_n_intersections_per_level"][0], high=config["world_n_intersections_per_level"][1]+1, size=1)[0]
 
-                    if config["generation_output"]:  # Output constraints if specified
+                    if config["generation_level_control"]:  # Output constraints if specified
                         print(f"World {ldx+1} - Loops: {world_n_loops_per_level}, T-Junctions: {world_n_tjunctions_per_level}, Intersections: {world_n_intersections_per_level}")
 
                     # Recalculate grid if no constraints have been considered during random selection
@@ -371,7 +371,7 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
 
                     grid.toShapes(visitation)  # Transform visitation to object-based matrix
 
-                    if config["generation_output"]:  print(grid.__str__())  # Output constraints if specified
+                    if config["generation_level_control"]:  print(grid.__str__())  # Output constraints if specified
 
                     if config["generation_level_control"]:  # Allow user approval of grid topology
                         userAnswer = input("Press enter to continue, or type 'x' to remake this level: ")
