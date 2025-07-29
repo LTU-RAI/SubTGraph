@@ -1,4 +1,4 @@
-# SubTGraph++: Dijkstra Route Descriptions on Structurally Constrained Topologies for Subterranean World Generation
+# SubTGraph: Dijkstra Route Descriptions on Structurally Constrained Topologies for Subterranean World Generation
 
 <img src="imgs/subtgraph.png"/>
 <img src="imgs/Figure5.jpg"/>
@@ -31,6 +31,7 @@ TODO
 ```
 # This is my code
 ```
+
 #### Level Visualization & Selection
 TODO
 ```
@@ -38,17 +39,20 @@ TODO
 ```
 <img src="imgs/Figure7.jpg"/>
 Image
+
 #### Mesh Storage & Reconstruction
 TODO
 ```
 # This is my code
 ```
+
 #### Constraint Definition
 TODO
 ```
 # This is my code
 ```
 <img src="imgs/Figure4.png"/>
+
 #### Dimension Controllability
 TODO
 ```
@@ -56,6 +60,7 @@ TODO
 ```
 <img src="imgs/Figure8jpg"/>
 <img src="imgs/Figure9.jpg"/>
+
 #### Texture Definition
 TODO
 ```
