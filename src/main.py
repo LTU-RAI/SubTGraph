@@ -371,9 +371,8 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
 
                     grid.toShapes(visitation)  # Transform visitation to object-based matrix
 
-                    if config["generation_level_control"]:  print(grid.__str__())  # Output constraints if specified
-
                     if config["generation_level_control"]:  # Allow user approval of grid topology
+                        print(grid.__str__())  # Output constraints if specified
                         userAnswer = input("Press enter to continue, or type 'x' to remake this level: ")
                         if userAnswer.lower() != 'x':  accepted = True
                     else:  accepted = True  # Consider first generated instance if no user control
