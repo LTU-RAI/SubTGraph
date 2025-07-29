@@ -58,7 +58,7 @@ TODO
 ```
 # This is my code
 ```
-<img src="imgs/Figure8jpg"/>
+<img src="imgs/Figure8.jpg"/>
 <img src="imgs/Figure9.jpg"/>
 
 #### Texture Definition
@@ -66,7 +66,7 @@ TODO
 ```
 # This is my code
 ```
-image
+<img src="imgs/Figure6.jpg"/>
 
 ## Tutorial Video
 
