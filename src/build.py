@@ -19,7 +19,7 @@ class FactoryObj():
         self.env_asset_dict = config['env_asset_list_type_a'] if config['generation_tile_type'] == 'a' else config['env_asset_list_type_b']
         
         # Dict with dimensions of assets for selected type
-        with open(SUBTGRAPH_PATH + '/config/dimensions-type-a.yaml' if config['generation_tile_type'] == 'a' else '/config/dimensions-type-b.yaml', 'r') as file:
+        with open(SUBTGRAPH_PATH + ('/config/dimensions-type-a.yaml' if config['generation_tile_type'] == 'a' else '/config/dimensions-type-b.yaml'), 'r') as file:
             self.dimensions = yaml.safe_load(file)
 
     def get_material(self, material_name: str, material_path: str, folder_path: str):

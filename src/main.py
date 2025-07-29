@@ -140,8 +140,6 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
     level_origin_array = []         # Holder of initial node to build mesh level recursively
     level_visitation_array = []     # Holder of visitation level matrices
 
-    ###
-
     try:
 
         if LOAD_MATRIX:  # Load matrix to visualize or generate mesh if specified by the user
@@ -429,6 +427,9 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
             mesh_level_direction_array = []     # Holder of shaft directions
 
             # Create temporal folder to store level meshes
+            if not os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
+                os.mkdir(os.path.join(SUBTGRAPH_PATH, 'tmp'))
+
             os.mkdir(os.path.join(SUBTGRAPH_PATH, 'tmp', folder))
 
             baseOffsetz = 0.0;  assetMaxWidth = 0.0  # Vertical offset and maximum width
@@ -593,4 +594,10 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
     except:
         # Remove generated mesh and temporal folders if any error occurs during generation
         shutil.rmtree(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder))
-        shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp", folder))
+        if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
+            shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
+
+
+if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
+    shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
+    
