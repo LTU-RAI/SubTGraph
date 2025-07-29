@@ -7,10 +7,10 @@ from scipy.sparse import csr_matrix
 ###
 
 # Transform (row, column) to an index
-get_index = lambda row, column: row * grid_columns + column
+getIndex = lambda row, column: row * grid_columns + column
 
 # Transform index to (row, column)
-get_pair  = lambda index: divmod(index, grid_columns)
+getPair  = lambda index: divmod(index, grid_columns)
 
 def harmonic_cost(start: tuple, end: tuple, hdx: int, shape: tuple) -> np.array:
     """
@@ -163,11 +163,11 @@ def dijkstra_solver(start: tuple, end: tuple, size: int) -> tuple:
     cost = csr_matrix(adjacency(cost))
 
     # Obtain indexes of start and end nodes
-    start = get_index(*start);  end = get_index(*end)
+    start = getIndex(*start);  end = getIndex(*end)
 
     # Compute Dijkstra path between nodes and extract shortest path
     _, predecessors = dijkstra(csgraph=cost, directed=False, indices=start, return_predecessors=True)
-    path = [get_pair(i) for i in extract_path(predecessors, end)]
+    path = [getPair(i) for i in extract_path(predecessors, end)]
 
     # Reflect selected path as a visitation matrix
     visitation = np.zeros([size, size])

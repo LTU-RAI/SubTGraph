@@ -38,6 +38,12 @@ isLimitNorthEast  = lambda idx, jdx: isLimitNorth(idx) and isLimitEast(jdx)
 isLimitSouthWest  = lambda idx, jdx: isLimitSouth(idx) and isLimitWest(jdx)
 isLimitSouthEast  = lambda idx, jdx: isLimitSouth(idx) and isLimitEast(jdx)
 
+# Get values at specified directions
+getValueNorth = lambda matrix, idx, jdx: matrix[idx-1][jdx]
+getValueSouth = lambda matrix, idx, jdx: matrix[idx+1][jdx]
+getValueWest  = lambda matrix, idx, jdx: matrix[idx][jdx-1]
+getValueEast  = lambda matrix, idx, jdx: matrix[idx][jdx+1]
+
 def get_random_id() -> str:
     """
     Generate random 32 length string.

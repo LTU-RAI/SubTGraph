@@ -1,11 +1,12 @@
 import re
-import numpy as np
 
 from utils import *
 
 ###
 
-REGEX = r'(?<!\*)\*(?!\*)'
+REGEX = r'(?<!\*)\*(?!\*)'  # Regular expression for identifying openings as *
+
+# Anonymous functions to split string of the asset when creating openings
 
 north_split = lambda string_split: string_split[0] + "  " + string_split[1] + "**" + string_split[2] if string_split.__len__() > 2 else \
                                    string_split[0] + "  " + string_split[1]
