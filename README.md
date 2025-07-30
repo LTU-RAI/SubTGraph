@@ -1,7 +1,11 @@
 # SubTGraph: Dijkstra Route Descriptions on Structurally Constrained Topologies for Subterranean World Generation
 
-<img src="imgs/subtgraph.png"/>
-<img src="imgs/Figure5.jpg"/>
+<p align="center">
+  <img src="imgs/subtgraph.png" style="width:60%; height:auto;"/>
+</p>
+<p align="center">
+  <img src="imgs/Figure5.jpg" style="width:60%; height:auto;"/>
+</p>
 
 TODO
 
