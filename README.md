@@ -21,7 +21,7 @@ cd ~/rai-subtgraph & python3 -m pip install -e .  --config-settings editable_mod
 ```
 
 ### Container deployment
-Docker allows for any machine and operative system to execute this tool by simply pulling an image. All dependencies are included and the repository is mounted during runtime to allow configuration changes from the user.
+Docker allows for any machine and operative system to execute this tool by simply pulling an image. All dependencies are included and the repository is mounted during runtime to allow configuration changes.
 ```
 # Pull image from Docker Hub
 docker pull fernand0labra/rai-subtgraph:latest
@@ -45,13 +45,64 @@ TODO
 ### User Configuration
 TODO
 ```
-# This is my code
+repository_path: '/home/fernand0labra/rai-subtgraph'
+
+generation_seed: 11
+generation_n_worlds: 1
 ```
 
 #### Level Visualization & Selection
 TODO
 ```
-# This is my code
+generation_level_control: True
+```
+
+#### Asset Selection
+```
+generation_tile_type: 'b'
+
+env_asset_list_type_a:
+  ...
+env_asset_list_type_b:
+  node: 
+    parameters: 'node'
+    assets: [
+      "cave_corner_01_type_b",
+      ...
+    ]
+
+  corner:       
+    parameters: 'corner,e,s'
+    assets: [
+      "cave_corner_01_type_b",
+      ...
+    ]
+
+  straight:     
+    parameters: 'straight,e,w'
+    assets: [
+      "cave_straight_01_type_b",
+      ...
+    ]
+
+  shaft: 
+    parameters: 'shaft,e,n,s,w'
+    assets: [
+      "cave_vertical_shaft_type_b",
+      ...
+    ]
+
+  junction:     
+    parameters: 'junction,e,n,s'
+    assets: [
+      "cave_3_way_01_type_b"
+    ]
+
+  intersection: 
+    parameters: 'intersection,e,n,s,w'
+    assets: [
+      "cave_4_way_01_type_b",
+    ]
 ```
 <img src="imgs/Figure7.jpg"/>
 Image
@@ -59,27 +110,41 @@ Image
 #### Mesh Storage & Reconstruction
 TODO
 ```
-# This is my code
+generation_save_folder: 'data'
+generation_load_folder: 'data/subtgraph_2025-07-28_14-31-05'
+
+generation_load_matrix: False
+generation_save_matrix: True
+generation_save_mesh: True
 ```
 
 #### Constraint Definition
 TODO
 ```
-# This is my code
+generation_topology: 'sine'
+generation_route_harmonic: -1
+
+world_n_levels: [1, 1]                          
+world_n_loops_per_level: [0, 2]                 
+world_n_tjunctions_per_level: [0, 2]           
+world_n_intersections_per_level: [0, 2]    
 ```
 <img src="imgs/Figure4.png"/>
 
 #### Dimension Controllability
 TODO
 ```
-# This is my code
+world_max_width:  [50, 100]
+world_min_length: [1000, 1000]
 ```
 <img src="imgs/Figure8.jpg"/>
 
 #### Texture Definition
 TODO
 ```
-# This is my code
+texture_cave_wall: 'CaveWall_Natural.jpg'
+texture_rock_pile: 'RockPile_Natural.jpg'
+texture_striated_rock: 'StriatedRock_Natural.jpg'
 ```
 <img src="imgs/Figure6.jpg"/>
 
