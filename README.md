@@ -5,7 +5,7 @@
   <img src="imgs/Figure5.jpg" style="width:80%; height:auto;"/>
 </p>
 
-This is the code repository of SubTGraph, an underground world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
+This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
 
 ## Installation
 The repository can be installed as a standalone Python package or deployed as a Docker container.
@@ -38,12 +38,21 @@ docker exec -it subtgraph bash
 
 
 ## Subterranean World Generation
-TODO
+The generation of the meshes is performed with the spawn of structural constraints i.e. loops, junctions and intersections. These constraints are satisfied by a set of objective nodes. Between each (constraint, node) pair a linear, parabolic or sine route description is applied to build a cost matrix. For every cost matrix, Dijkstra is applied and all paths are summed into the visitation matrix.
+
+The visitation matrix, composed of (0,1) is transformed into an object-level matrix with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive process is followed from an initial objective node to build the .obj mesh by applying horizontal and vertical offsets while importing the individual tile assets.
 <img src="imgs/Figure13.jpg"/>
 
-
 ### User Configuration
-TODO
+The generation process is governed by the user-specified YAML configuration under [*config/generation*](/config/generation/). Four configuration files are available to the user: Custom, natural, operational and lavatube configurations. To specify the desired configuration the following path has to be changed in [*src/utils.py*](/src/utils.py).
+
+```
+# src/utils.py
+with open('../config/generation/custom.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+```
+
+The initial basic configuration that can be chosen in the YAML file is the repository path, the random generation seed and the number of generated worlds that want to be generated.
 ```
 repository_path: '/home/fernand0labra/rai-subtgraph'
 
