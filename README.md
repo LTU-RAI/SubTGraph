@@ -52,22 +52,25 @@ with open('../config/generation/custom.yaml', 'r') as file:
     config = yaml.safe_load(file)
 ```
 
-The initial basic configuration that can be chosen in the YAML file is the repository path, the random generation seed and the number of generated worlds that want to be generated.
+The initial basic configuration that can be chosen in the YAML file is the random generation seed and the number of worlds that want to be generated. The repository path needs to be updated to the folder where this repository has been cloned.
+
 ```
-repository_path: '/home/fernand0labra/rai-subtgraph'
+repository_path: '/home/fernand0labra/rai-subtgraph'   ### !!! UPDATE WITH YOUR PATH!!!
 
 generation_seed: 11
 generation_n_worlds: 1
 ```
 
 #### Level Visualization & Selection
-TODO
+During the generation at each level, the user can define the following flag to visualize in the terminal the topology that has been randomly created and choose whether to keep or remake it. Three examples of terminal printed topologies are shown below.
 ```
 generation_level_control: True
 ```
 <img src="imgs/Figure7.jpg"/>
 
 #### Asset Selection
+This repository uses mesh assets from the [DARPA SubT World Challenge](https://subtchallenge.gazebosim.org/home). In a similar fashion as their [World Generator](https://github.com/osrf/subt/wiki/World-Creation-Tutorial), this tool utilizes **anastomotic (type 'a')** or **rectilinear (type 'b')** meshes. For each connection type (node, corner, junction, etc.) a selected subset has been considered and within this selection, the user can comment the specific meshes that should not be used. In this way, the controllability of the appearance of the mesh is allowed.
+
 ```
 generation_tile_type: 'b'
 
@@ -116,14 +119,23 @@ env_asset_list_type_b:
 ```
 
 #### Mesh Storage & Reconstruction
-TODO
+The generation produces an .obj mesh together with three matrices describing the topology of the world, one of them being the visitation. The user can choose whether the .obj mesh should be built or not with the flag **generation_save_mesh**. In this way, the user can store the world as a matrix of 0s and 1s instead of a triangulated mesh of several GBs. 
+
+The world can be then reconstructed onto an .obj mesh by indicating the folder where it is located **generation_save_folder** and the flags **generation_load_matrix**, **generation_save_mesh**. If the user only wants to visualize the world, set **generation_save_mesh** to False and **generation_level_control** to True.
+
+It is also possible to not save the matrices with **generation_save_matrix**, but this would mean that only the mesh could be saved and no reconstruction can be performed.
 ```
 generation_save_folder: 'data'
 generation_load_folder: 'data/subtgraph_2025-07-28_14-31-05'
 
-generation_load_matrix: False
-generation_save_matrix: True
-generation_save_mesh: True
+## generation_load_matrix + generation_level_control -> Visualize topology of world
+## generation_load_matrix + generation_save_mesh     -> Reconstruct .obj mesh
+## generation_save_matrix + generation_save_mesh     -> Save both matrix and .obj mesh
+
+generation_load_matrix: False    # Loading visitation matrix from generation_load_folder
+
+generation_save_matrix: True     # Saving topology matrices
+generation_save_mesh: True       # Saving .obj mesh
 ```
 
 #### Constraint Definition
