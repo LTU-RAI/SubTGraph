@@ -103,26 +103,7 @@ env_asset_list_type_b:
       "cave_straight_01_type_b",
       ...
     ]
-
-  shaft: 
-    parameters: 'shaft,e,n,s,w'
-    assets: [
-      "cave_vertical_shaft_type_b",
-      ...
-    ]
-
-  junction:     
-    parameters: 'junction,e,n,s'
-    assets: [
-      "cave_3_way_01_type_b"
-    ]
-
-  intersection: 
-    parameters: 'intersection,e,n,s,w'
-    assets: [
-      "cave_4_way_01_type_b",
-    ]
-```
+  ...
 
 #### Mesh Storage & Reconstruction
 The generation produces an .obj mesh together with three matrices describing the topology of the world, one of them being the visitation. The user can choose whether the .obj mesh should be built or not with the flag **generation_save_mesh**. In this way, the user can store the world as a matrix of 0s and 1s instead of a triangulated mesh of several GBs. 
