@@ -177,7 +177,10 @@ world_min_length: [1000, 1000]   # In meters
 <img src="imgs/Figure8.jpg"/>
 
 #### Texture Definition
-TODO
+This tool allows for the definition of textures to each of the objects within a mesh. Each asset connection is composed of three objects, the "CaveWall", "RockPile", "StriatedRock". These objects can be textured from one of the images under [**assets/textures**](/assets/textures/), but the user can also specify their own. 
+
+Depending on the requirements of the user, it is possible to not include the "RockPile" or "StriatedRock" if not desired by not indicating any texture '' for that particular object.
+
 ```
 # config/generation/custom.yaml
 
