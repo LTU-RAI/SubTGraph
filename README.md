@@ -56,6 +56,7 @@ TODO
 ```
 generation_level_control: True
 ```
+<img src="imgs/Figure7.jpg"/>
 
 #### Asset Selection
 ```
@@ -104,8 +105,6 @@ env_asset_list_type_b:
       "cave_4_way_01_type_b",
     ]
 ```
-<img src="imgs/Figure7.jpg"/>
-Image
 
 #### Mesh Storage & Reconstruction
 TODO
