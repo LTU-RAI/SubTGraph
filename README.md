@@ -40,7 +40,7 @@ docker exec -it subtgraph bash
 ## Subterranean World Generation
 The generation of the meshes is performed with the spawn of structural constraints i.e. loops, junctions and intersections. These constraints are satisfied by a set of objective nodes. Between each (constraint, node) pair a linear, parabolic or sine route description is applied to build a cost matrix. For every cost matrix, Dijkstra is applied and all paths are summed into the visitation matrix.
 
-The visitation matrix, composed of (0,1) is transformed into an object-level matrix with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive process is followed from an initial objective node to build the .obj mesh by applying horizontal and vertical offsets while importing the individual tile assets.
+The visitation matrix, composed of (0,1) is transformed into an object-level matrix with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive process is followed from an initial objective node to build the .obj mesh, applying horizontal and vertical offsets while importing the individual assets.
 <img src="imgs/Figure13.jpg"/>
 
 ### User Configuration
