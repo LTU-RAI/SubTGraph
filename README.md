@@ -162,7 +162,23 @@ world_n_loops_per_level: [0, 2]            # Define range of loops
 world_n_tjunctions_per_level: [0, 2]       # Define range of junctions   
 world_n_intersections_per_level: [0, 2]    # Define range of intersections
 ```
-<img src="imgs/Figure4.png" style="width:60%; height:auto;"/>
+
+  <table>
+    <tr>
+      <td>
+        <img src="imgs/Figure2.png"/>
+      </td>
+      <td rowspan="2">
+          <img src="imgs/Figure4.png"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="imgs/Figure3.png"/>
+      </td>
+    </tr>
+  </table>
+
 
 #### Dimension Controllability
 It is possible to control the dimensions of the mesh by specifying a range in which the world can be spawned. The grid of each level is computed as the square root of the length, ensuring larger topologies. However, bigger subterranean worlds need to include an increased number of constraints in order to satisfy that all routes are at some point connected.
@@ -175,6 +191,7 @@ world_max_width:  [50, 100]      # In meters
 world_min_length: [1000, 1000]   # In meters
 ```
 <img src="imgs/Figure8.jpg"/>
+<img src="imgs/Figure9.jpg"/>
 
 #### Texture Definition
 This tool allows for the definition of textures to each of the objects within a mesh. Each asset connection is composed of three objects, the "CaveWall", "RockPile", "StriatedRock". These objects can be textured from one of the images under [**assets/textures**](/assets/textures/), but the user can also specify their own. 
