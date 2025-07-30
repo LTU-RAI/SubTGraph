@@ -5,21 +5,35 @@
   <img src="imgs/Figure5.jpg" style="width:80%; height:auto;"/>
 </p>
 
-TODO
+This is the code repository of SubTGraph, an underground world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
 
 ## Installation
-TODO
+The repository can be installed as a standalone Python package or deployed as a Docker container.
 
 ### Python package
-TODO
+This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
 ```
-# This is my code
+# Clone repository
+cd ~ & git clone https://github.com/fernand0labra/rai-subtgraph.git
+
+# Install package
+cd ~/rai-subtgraph & python3 -m pip install -e .  --config-settings editable_mode=compat
 ```
 
 ### Container deployment
-TODO
+Docker allows for any machine and operative system to execute this tool by simply pulling an image. All dependencies are included and the repository is mounted during runtime to allow configuration changes from the user.
 ```
-# This is my code
+# Pull image from Docker Hub
+docker pull fernand0labra/rai-subtgraph:latest
+
+# Clone repository
+cd ~ & git clone https://github.com/fernand0labra/rai-subtgraph.git
+
+# Start container "subtgraph"
+bash ~/rai-subtgraph/docker/docker.sh
+
+# Connect to container terminal
+docker exec -it subtgraph bash
 ```
 
 
