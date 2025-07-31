@@ -22,13 +22,13 @@ generation_level_control: True
 generation_topology: 'parabolic'
 generation_route_harmonic: -1
 
-world_max_width:  [40, 50]
+world_max_width:  [100, 200]
 world_min_length: [1000, 2000]
 
 world_n_levels: [1, 1]                          
 world_n_loops_per_level: [0, 2]                 
-world_n_tjunctions_per_level: [1, 3]           
-world_n_intersections_per_level: [1, 3]         
+world_n_tjunctions_per_level: [1, 2]           
+world_n_intersections_per_level: [1, 2]         
 
 
 # ****************************************************************************************************************
@@ -62,14 +62,14 @@ env_asset_list_type_a:
   corner:       
     parameters: 'corner,e,s'
     assets: [
-      "cave_corner_01_type_a",
+      # "cave_corner_01_type_a",
       "cave_corner_03_type_a",
     ]
 
   straight:     
     parameters: 'straight,e,w'
     assets: [
-      "cave_split_type_a",
+      # "cave_split_type_a",
       "cave_straight_type_a",
     ]
 
