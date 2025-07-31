@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="imgs/subtgraph.png" style="width:60%; height:auto;"/>
+  <img src="imgs/subtgraph.png" style="width:80%; height:auto;"/>
 </p>
 <p align="center">
-  <img src="imgs/Figure5.jpg" style="width:80%; height:auto;"/>
+  <img src="imgs/Figure5.jpg" style="width:100%; height:auto;"/>
 </p>
 
 This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
