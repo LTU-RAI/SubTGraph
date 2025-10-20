@@ -57,13 +57,13 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-    repo_array = ['linear', 'parabolic', 'sine']
+    repo_array = ['operational', 'natural', 'lavatube']
     for rdx, repo in enumerate(repo_array):
 
         ssim_symmetry_horiz = 0
         ssim_symmetry_vert = 0
         ssim_rotation = 0
-        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/metrics/' + repo, 'structural')
+        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/' + repo, 'structural')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
@@ -77,7 +77,7 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
         sns.barplot(x=['Horizontal', 'Vertical', 'Rotation'], y=[ssim_symmetry_horiz/len(data), ssim_symmetry_vert/len(data), ssim_rot/len(data)], ax=axes[rdx], palette='rocket')
         axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' generation')
         axes[rdx].set_ylabel('SSIM')
-        axes[rdx].set_ylim(0, 0.25)
+        axes[rdx].set_ylim(0, 0.5)
 
     plt.tight_layout()
     plt.show()
@@ -96,13 +96,13 @@ if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corri
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
-    repo_array = ['linear', 'parabolic', 'sine']
+    repo_array = ['operational', 'natural', 'lavatube']
     for rdx, repo in enumerate(repo_array):
 
         histogram = {}
         for value in value_types.keys():  histogram.update({value : []})
 
-        data = list_and_unpickle(SUBTGRAPH_PATH + '/repo/probabilities/1.1.1.' + repo, 'spatial')
+        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/' + repo, 'spatial')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
@@ -135,7 +135,7 @@ if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corri
 
         axes[rdx].set_xticks(xticks_positions, [str(i) for i in range(min(values_np), max(values_np) + 1)])
         axes[rdx].set_xticklabels([value_types[key] for key in value_types.keys()])
-        axes[rdx].set_ylim(0, 60)
+        axes[rdx].set_ylim(0, 100)
 
     plt.tight_layout()
     plt.show()
