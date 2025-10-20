@@ -1,7 +1,7 @@
 # ****************************************************************************************************************
 # !!! PATH TO REPOSITORY !!!
 
-repository_path: '/home/fernand0labra/rai-subtgraph'
+repository_path: '/home/fernand0labra/SubTGraph'
 
 # ****************************************************************************************************************
 # Spatial description of the environment
@@ -23,12 +23,12 @@ generation_topology: 'linear'
 generation_route_harmonic: -1
 
 world_max_width:  [80, 100]
-world_min_length: [2000, 3000]
+world_min_length: [2000, 4000]
 
-world_n_levels: [2, 2]                          
+world_n_levels: [3, 3]                          
 world_n_loops_per_level: [0, 0]                 
-world_n_tjunctions_per_level: [2, 4]           
-world_n_intersections_per_level: [2, 4]         
+world_n_tjunctions_per_level: [0, 2]           
+world_n_intersections_per_level: [0, 2]         
 
 
 # ****************************************************************************************************************
