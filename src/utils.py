@@ -44,6 +44,8 @@ getValueSouth = lambda matrix, idx, jdx: matrix[idx+1][jdx]
 getValueWest  = lambda matrix, idx, jdx: matrix[idx][jdx-1]
 getValueEast  = lambda matrix, idx, jdx: matrix[idx][jdx+1]
 
+###
+
 def get_random_id() -> str:
     """
     Generate random 32 length string.
@@ -54,6 +56,7 @@ def get_random_id() -> str:
         Random 32 length string
     """
     return ''.join(random.choice(string.ascii_letters) for i in range(32))
+
 
 def get_datetime_id(prefix="subtgraph") -> str:
     """
@@ -75,3 +78,16 @@ def get_datetime_id(prefix="subtgraph") -> str:
 
     # Combine prefix with the formatted date and time
     return f"{prefix}_{current_time}"
+
+
+def intersection_over_union(mat1, mat2):
+    """Compute IoU for binary occupancy matrices (1 = occupied, 0 = free)."""
+    mat1 = (mat1 > 0).float()
+    mat2 = (mat2 > 0).float()
+    
+    intersection = torch.sum((mat1 * mat2))
+    union = torch.sum((mat1 + mat2) > 0)
+    
+    if union == 0:
+        return torch.tensor(1.0)  # both empty, treat as identical
+    return intersection / union

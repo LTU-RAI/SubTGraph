@@ -26,11 +26,11 @@ def list_and_unpickle(directory: str):
 
 ###
 
-ssim_total = []
+iou_total = []
 data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/lavatube')
 
 for idx in range(len(data)):
-    ssim_elem_total = []
+    iou_elem_total = []
 
     mat1 = torch.from_numpy(data[idx]).float()
     mat1 = mat1.reshape((1, *mat1.shape))
@@ -59,12 +59,16 @@ for idx in range(len(data)):
         mat1_padded = pad_to_shape(mat1, max_shape)
         mat2_padded = pad_to_shape(mat2, max_shape)
 
-        ssim = StructuralSimilarityIndexMeasure(data_range=1.0)
-        score = ssim(mat1_padded, mat2_padded)
-        ssim_elem_total.append(score.item())
+        score = intersection_over_union(mat1_padded, mat2_padded)
+        iou_elem_total.append(score.item())
 
-    ssim_total.append(ssim_elem_total)
+    iou_total.append(iou_elem_total)
+
 
 plt.figure(figsize=(8, 6))
-sns.heatmap(ssim_total, annot=False, fmt='g')
+sns.heatmap(iou_total, cmap='rocket', vmin=0, vmax=1, cbar_kws={'label': 'IoU'})
+plt.title("Lava Tube")
+plt.xlabel("Graph ID")
+plt.ylabel("Graph ID")
+plt.tight_layout()
 plt.show()

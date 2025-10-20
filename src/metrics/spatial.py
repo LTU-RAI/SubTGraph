@@ -4,7 +4,6 @@ import seaborn as sns, numpy as np
 
 from utils import *
 from scipy.ndimage import rotate
-from torchmetrics.image import StructuralSimilarityIndexMeasure
 
 ###
 
@@ -26,58 +25,63 @@ def list_and_unpickle(directory: str, matrix_type: str):
 
 
 def symmetry_metric(mat):
+    """Compute horizontal and vertical symmetry IoU."""
     mat_horiz_mirror = mat.flip(dims=(2,))   # Horizontal mirror
     mat_vert_mirror  = mat.flip(dims=(1,))   # Vertical mirror
 
-    ssim = StructuralSimilarityIndexMeasure(data_range=1.0)
+    iou_horiz = intersection_over_union(mat, mat_horiz_mirror)
+    iou_vert  = intersection_over_union(mat, mat_vert_mirror)
 
-    # Compute SSIM between the original matrix and its mirrored versions
-    ssim_horiz = ssim(mat.reshape((1, *mat.shape)), mat_horiz_mirror.reshape((1, *mat_horiz_mirror.shape)))
-    ssim_vert  = ssim(mat.reshape((1, *mat.shape)), mat_vert_mirror.reshape((1, *mat_vert_mirror.shape)))
-
-    return ssim_horiz, ssim_vert
+    return iou_horiz, iou_vert
 
 
 def rotation_symmetry_metric(mat):
+    """Compute rotational symmetry IoU."""
     rotations = [rotate(mat, angle, reshape=False) for angle in [90, 180, 270]]
-
-    ssim = StructuralSimilarityIndexMeasure(data_range=1.0)
-
-    # Compute SSIM for each rotation compared to the original matrix
-    similarities = [ssim(mat.reshape((1, *mat.shape)), torch.from_numpy(rotated).reshape((1, *rotated.shape))) for rotated in rotations]
-    
-    return np.mean(similarities)
+    ious = [intersection_over_union(mat, torch.from_numpy(rotated)) for rotated in rotations]
+    return np.mean([iou.item() for iou in ious])
 
 ###
 
 if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more “natural” or rich environments.
 
-    ssim_symmetry_total = []
-    ssim_rotation_total = []
+    iou_symmetry_total = []
+    iou_rotation_total = []
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 
     repo_array = ['operational', 'natural', 'lavatube']
     for rdx, repo in enumerate(repo_array):
 
-        ssim_symmetry_horiz = 0
-        ssim_symmetry_vert = 0
-        ssim_rotation = 0
+        iou_symmetry_horiz = 0
+        iou_symmetry_vert = 0
+        iou_rotation = 0
+
         data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/' + repo, 'structural')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
-            ssim_horiz, ssim_vert = symmetry_metric(mat)
-            ssim_symmetry_horiz += ssim_horiz.item()
-            ssim_symmetry_vert += ssim_vert.item()
+            iou_horiz, iou_vert = symmetry_metric(mat)
+            iou_symmetry_horiz += iou_horiz.item()
+            iou_symmetry_vert += iou_vert.item()
 
-            ssim_rot = rotation_symmetry_metric(mat)
-            ssim_rotation += ssim_rot
+            iou_rot = rotation_symmetry_metric(mat)
+            iou_rotation += iou_rot
             
-        sns.barplot(x=['Horizontal', 'Vertical', 'Rotation'], y=[ssim_symmetry_horiz/len(data), ssim_symmetry_vert/len(data), ssim_rot/len(data)], ax=axes[rdx], palette='rocket')
+        sns.barplot(
+            x=['Horizontal', 'Vertical', 'Rotation'], 
+            y=[
+                iou_symmetry_horiz/len(data), 
+                iou_symmetry_vert/len(data), 
+                iou_rotation/len(data)
+            ], 
+            ax=axes[rdx], 
+            palette='rocket'
+        )
+
         axes[rdx].set_title(repo_array[rdx][0].upper() + repo_array[rdx][1:] + ' generation')
-        axes[rdx].set_ylabel('SSIM')
-        axes[rdx].set_ylim(0, 0.5)
+        axes[rdx].set_ylabel('IoU')
+        axes[rdx].set_ylim(0, 0.25)
 
     plt.tight_layout()
     plt.show()
