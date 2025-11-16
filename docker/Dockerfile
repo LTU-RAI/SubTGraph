@@ -1,10 +1,19 @@
-FROM python:3.10-slim
+FROM fernand0labra/blender:latest
 
-RUN mkdir /workspace
-COPY rai-subtgraph /workspace/rai-subtgraph
+RUN apt-get update \
+    && python3 -m pip install --upgrade pip \
+    && python3 -m pip install \
+        pyyaml==6.0.3 \
+        numpy==1.26.4 \
+        mathutils==3.3.0 \
+        seaborn==0.13.2 \
+        matplotlib==3.5.1 \
+        scipy==1.15.3 \
+        torchmetrics==1.7.4 \
+        torch==2.0.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install gcc
-RUN cd /workspace/rai-subtgraph && \
-    python3 -m pip install -e .  --config-settings editable_mode=compat
+WORKDIR /home/blender/
 
-WORKDIR /workspace/rai-subtgraph
+EXPOSE 22
+CMD [ "/usr/sbin/sshd", "-D" ]
