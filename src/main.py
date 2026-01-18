@@ -1,4 +1,4 @@
-import os, pickle, math, string, pickle, random, bpy, shutil, numpy as np
+import os, pickle, time, math, string, pickle, random, bpy, shutil, numpy as np
 
 from utils import *
 from mathutils import Vector
@@ -135,6 +135,8 @@ def updateVisitation(origin: tuple, row: int, col: int, visitation: np.array) ->
 ###
 
 for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as indicated
+
+    start_time = time.time()
 
     level_array = []                # Holder of grid level objects
     level_origin_array = []         # Holder of initial node to build mesh level recursively
@@ -596,6 +598,8 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
         if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
             shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
 
+    end_time = time.time()
+    print(f"Execution Time: {end_time - start_time}")
 
 if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
     shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
