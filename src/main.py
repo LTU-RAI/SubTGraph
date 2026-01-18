@@ -136,8 +136,6 @@ def updateVisitation(origin: tuple, row: int, col: int, visitation: np.array) ->
 
 for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as indicated
 
-    start_time = time.time()
-
     level_array = []                # Holder of grid level objects
     level_origin_array = []         # Holder of initial node to build mesh level recursively
     level_visitation_array = []     # Holder of visitation level matrices
@@ -422,6 +420,8 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
 
         if SAVE_MESH:   # Generate and save mesh if specified by the user
 
+            start_time = time.time()
+
             mesh_level_offset_array = []        # Holder of vertical offsets
             mesh_level_rotation_array = []      # Holder of level rotations
             mesh_level_filename_array = []      # Holder of level temporal objects
@@ -592,14 +592,15 @@ for _ in range(config["generation_n_worlds"]):  # Generate as many worlds as ind
             bpy.ops.object.select_all(action='SELECT')
             bpy.ops.object.delete(use_global=False)
 
+        end_time = time.time()
+        print(f"Mesh Generation Time: {end_time - start_time}")
+
+
     except:
         # Remove generated mesh and temporal folders if any error occurs during generation
         shutil.rmtree(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder))
         if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
             shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
-
-    end_time = time.time()
-    print(f"Execution Time: {end_time - start_time}")
 
 if os.path.exists(os.path.join(SUBTGRAPH_PATH, 'tmp')):
     shutil.rmtree(os.path.join(SUBTGRAPH_PATH, "tmp"))
