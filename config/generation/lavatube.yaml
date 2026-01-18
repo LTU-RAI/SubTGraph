@@ -34,10 +34,10 @@ world_n_intersections_per_level: [0, 1]
 # ****************************************************************************************************************
 # Repository paths
 
-asset_path: '/home/fernand0labra/rai-subtgraph/assets/subt/'
+asset_path: '/home/fernand0labra/SubTGraph/assets/subt/'
 
-darpa_dimensions_type_a: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-a.yaml'
-darpa_dimensions_type_b: '/home/fernand0labra/rai-subtgraph/config/dimensions-type-b.yaml'
+darpa_dimensions_type_a: '/home/fernand0labra/SubTGraph/config/dimensions-type-a.yaml'
+darpa_dimensions_type_b: '/home/fernand0labra/SubTGraph/config/dimensions-type-b.yaml'
 
 
 # ****************************************************************************************************************
