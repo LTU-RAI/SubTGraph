@@ -4,7 +4,6 @@ dependencies = [
     'PyYAML',
     'numpy==1.26.4',
     'mathutils==3.3.0',
-    'bpy==4.0.0',
     'seaborn==0.13.2',
     'matplotlib==3.5.1',
     'scipy==1.15.3',
@@ -29,5 +28,5 @@ setup(
     description='Subterranean World Generator for Simulation Techniques.',
     long_description=open('README.md').read(),  # Ensure you have a README.md file for long description
     long_description_content_type='text/markdown',
-    url='https://github.com/fernand0labra/rai-subtgraph.git',  # Update with your GitHub repo
+    url='https://github.com/fernand0labra/SubTGraph.git',  # Update with your GitHub repo
 )
