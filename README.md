@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="imgs/subtgraph.png" style="width:80%; height:auto;"/>
+  <img src="imgs/figure1.png" style="width:80%; height:auto;"/>
 </p>
 <p align="center">
-  <img src="imgs/Figure5.jpg" style="width:100%; height:auto;"/>
+  <img src="imgs/figure2.jpg" style="width:100%; height:auto;"/>
 </p>
 
 This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
@@ -14,10 +14,11 @@ The repository can be installed as a standalone Python package or deployed as a 
 This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
 ```
 # Clone repository
-cd ~ & git clone https://github.com/fernand0labra/rai-subtgraph.git
+cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
 
 # Install package
-cd ~/rai-subtgraph & python3 -m pip install -e .  --config-settings editable_mode=compat
+cd ~/SubTGraph & python3 -m pip install -e .
+pip install bpy==4.0.0 --extra-index-url https://download.blender.org/pypi/
 ```
 
 ### Container deployment
@@ -38,10 +39,29 @@ docker exec -it subtgraph bash
 
 
 ## Subterranean World Generation
-The generation of the meshes is performed with the spawn of structural constraints i.e. loops, junctions and intersections. These constraints are satisfied by a set of objective nodes. Between each (constraint, node) pair a linear, parabolic or sine route description is applied to build a cost matrix. For every cost matrix, Dijkstra is applied and all paths are summed into the visitation matrix.
+A set of topological, dimensional and perceptual parameters are controlled to generate distinct 2-dimensional topologies of varying dimensions with textures and patterns that resemble different types of underground worlds e.g.
+natural caves, operational mines or lava tubes.
 
-The visitation matrix, composed of (0,1) is transformed into an object-level matrix with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive process is followed from an initial objective node to build the .obj mesh, applying horizontal and vertical offsets while importing the individual assets.
-<img src="imgs/Figure13.jpg"/>
+The process starts by setting a group of topometric constraints, namely intersections or T-junctions, and associating objective nodes to their ends. An optimization process estimates a path, by utilizing Dijkstra over a manipulated cost matrix that includes lower costs for specific shape patterns defined over a route descriptor.
+
+<p align="center">
+  <img src="imgs/figure3.png" style="width:100%; height:auto;"/>
+</p>
+
+The generation is started by running the following command. This process utilizes the user requirements to create an initial 2-dimensional topology, which is visualized in the user terminal. For optimal interaction, it is recommended that the terminal view is zoomed out to the maximum. Thereafter, the uses can choose whether to keep the current topology or generate a new one. This prompt is given per desired number of levels. Once all topologies have been accepted, the process instantiates the world mesh.
+
+```
+cd src & python3 main.py
+...
+>> Press enter to continue, or type 'x' to remake this level: (? User Input)
+```
+
+The topology occupancy matrix is transformed into an object-level graph with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive per-level association instantiates and offsets the mesh components from a list of available assets to create the final underground world.
+
+<p align="center">
+  <img src="imgs/figure4.jpg" style="width:100%; height:auto;"/>
+</p>
+
 
 ### User Configuration
 The generation process is governed by the user-specified YAML configuration under [*config/generation*](/config/generation/). Four configuration files are available to the user: Custom, natural, operational and lavatube configurations. To specify the desired configuration the following path has to be changed in [*src/utils.py*](/src/utils.py).
@@ -57,7 +77,7 @@ The initial basic configuration that can be chosen in the YAML file is the rando
 ```
 # config/generation/custom.yaml
 
-repository_path: '/home/fernand0labra/rai-subtgraph'   ### !!! UPDATE WITH YOUR PATH!!!
+repository_path: '/home/fernand0labra/SubTGraph'   ### !!! UPDATE WITH YOUR PATH!!!
 
 generation_seed: 11
 generation_n_worlds: 1
@@ -70,7 +90,10 @@ During the generation at each level, the user can define the following flag to v
 
 generation_level_control: True
 ```
-<img src="imgs/Figure7.jpg"/>
+<p align="center">
+  <img src="imgs/figure5.jpg" style="width:100%; height:auto;"/>
+</p>
+
 
 #### Asset Selection
 This repository uses mesh assets from the [DARPA SubT World Challenge](https://subtchallenge.gazebosim.org/home). In a similar fashion as their [World Generator](https://github.com/osrf/subt/wiki/World-Creation-Tutorial), this tool utilizes **anastomotic (type 'a')** or **rectilinear (type 'b')** meshes. For each connection type (node, corner, junction, etc.) a selected subset has been considered and within this selection, the user can comment the specific meshes that should not be used. In this way, the controllability of the appearance of the mesh is allowed.
@@ -129,7 +152,7 @@ generation_save_mesh: True       # Saving .obj mesh
 ```
 
 #### Constraint Definition
-This tool functions by locating loops, junctions and intersections at different positions of the grid and satisfying their corners with objective nodes. The route that will be followed from each corner to its objective node will follow a harmonic signal with (0,1,2) nodes as specified by the user to respectively create linear, parabolic and sine routes.
+This tool functions by locating loops, junctions and intersections at different positions of the grid and satisfying their ends with objective nodes. The route that will be followed from each corner to its objective node will follow a harmonic signal with (0,1,2) nodes as specified by the user to respectively create linear, parabolic and sine routes.
 
 All specified values work within ranges, if the user wants to specify a fixed value then [low, high] should have low = high. Otherwise a random value from within the range *random(low, high)* will be computed.
 ```
@@ -145,22 +168,11 @@ world_n_tjunctions_per_level: [0, 2]       # Define range of junctions
 world_n_intersections_per_level: [0, 2]    # Define range of intersections
 ```
 
-  <table>
-    <tr>
-      <td>
-        <img src="imgs/Figure2.png"/>
-      </td>
-      <td rowspan="2">
-          <img src="imgs/Figure4.png"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <img src="imgs/Figure3.png"/>
-      </td>
-    </tr>
-  </table>
+The following image displays the effect of different structural constraints in the generation of an underground topology.
 
+<p align="center">
+  <img src="imgs/figure6.png" style="width:75%; height:auto;"/>
+</p>
 
 #### Dimension Controllability
 It is possible to control the dimensions of the mesh by specifying a range in which the world can be spawned. The grid of each level is computed as the square root of the length, ensuring larger topologies. However, bigger subterranean worlds need to include an increased number of constraints in order to satisfy that all routes are at some point connected.
@@ -172,8 +184,11 @@ The dimensionality is controlled by calculating a ratio between the specified us
 world_max_width:  [50, 100]      # In meters
 world_min_length: [1000, 1000]   # In meters
 ```
-<img src="imgs/Figure8.jpg"/>
-<img src="imgs/Figure9.jpg"/>
+
+<p align="center">
+  <img src="imgs/figure7.jpg" style="width:100%; height:auto;"/>
+</p>
+
 
 #### Texture Definition
 This tool allows for the definition of textures to each of the objects within a mesh. Each asset connection is composed of three objects, the "CaveWall", "RockPile", "StriatedRock". These objects can be textured from one of the images under [**assets/textures**](/assets/textures/), but the user can also specify their own. 
@@ -187,9 +202,13 @@ texture_cave_wall: 'CaveWall_Natural.jpg'
 texture_rock_pile: 'RockPile_Natural.jpg'
 texture_striated_rock: 'StriatedRock_Natural.jpg'
 ```
-<img src="imgs/Figure6.jpg"/>
 
-## Tutorial Video
+<p align="center">
+  <img src="imgs/figure8.jpg" style="width:100%; height:auto;"/>
+</p>
 
+## Benchmark Dataset
+
+A benchmark dataset with 50 worlds of each designed environment configuration is released with this code repository. This dataset is available at the branch *benchmark* and each world can be individually downloaded or directly pulled with Git LFS.
 
 ## Citation
