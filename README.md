@@ -28,7 +28,7 @@ Docker allows for any machine and operative system to execute this tool by simpl
 docker pull fernand0labra/rai-subtgraph:latest
 
 # Clone repository
-cd ~ & git clone https://github.com/fernand0labra/rai-subtgraph.git
+cd ~ & git clone https://github.com/fernand0labra/SubTGraph.git
 
 # Start container "subtgraph"
 bash ~/rai-subtgraph/docker/docker.sh
@@ -168,10 +168,10 @@ world_n_tjunctions_per_level: [0, 2]       # Define range of junctions
 world_n_intersections_per_level: [0, 2]    # Define range of intersections
 ```
 
-The following image displays the effect of different structural constraints in the generation of an underground topology.
+The following image displays the effect of different structural constraints in the generation of an underground topology. Click on the image for a better resolution.
 
 <p align="center">
-  <img src="imgs/figure6.png" style="width:75%; height:auto;"/>
+  <img src="imgs/figure6.png" style="width:35%; height:auto;"/>
 </p>
 
 #### Dimension Controllability
