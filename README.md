@@ -7,6 +7,10 @@
 
 This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
 
+## Benchmark Dataset
+
+A benchmark dataset with 50 worlds of each designed environment configuration is released with this code repository. This dataset is available at the branch *benchmark* and each world can be individually downloaded or directly pulled with Git LFS.
+
 ## Installation
 The repository can be installed as a standalone Python package or deployed as a Docker container.
 
@@ -206,9 +210,5 @@ texture_striated_rock: 'StriatedRock_Natural.jpg'
 <p align="center">
   <img src="imgs/figure8.jpg" style="width:100%; height:auto;"/>
 </p>
-
-## Benchmark Dataset
-
-A benchmark dataset with 50 worlds of each designed environment configuration is released with this code repository. This dataset is available at the branch *benchmark* and each world can be individually downloaded or directly pulled with Git LFS.
 
 ## Citation
