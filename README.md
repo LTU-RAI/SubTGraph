@@ -18,7 +18,7 @@ The repository can be installed as a standalone Python package or deployed as a 
 This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
 ```
 # Clone repository
-cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
+cd ~ & git clone --depth 1 https://github.com/LTU-RAI/SubTGraph.git
 
 # Install package
 cd ~/SubTGraph & python3 -m pip install -e .
@@ -32,7 +32,7 @@ Docker allows for any machine and operative system to execute this tool by simpl
 docker pull fernand0labra/rai-subtgraph:latest
 
 # Clone repository
-cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
+cd ~ & git clone --depth 1 https://github.com/LTU-RAI/SubTGraph.git
 
 # Start container "subtgraph"
 bash ~/rai-subtgraph/docker/docker.sh
