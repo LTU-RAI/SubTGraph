@@ -32,7 +32,7 @@ Docker allows for any machine and operative system to execute this tool by simpl
 docker pull fernand0labra/rai-subtgraph:latest
 
 # Clone repository
-cd ~ & git clone https://github.com/fernand0labra/SubTGraph.git
+cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
 
 # Start container "subtgraph"
 bash ~/rai-subtgraph/docker/docker.sh
