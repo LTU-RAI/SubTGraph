@@ -15,6 +15,7 @@ A benchmark dataset with 50 worlds of each designed environment configuration is
 
 If you use SubTGraph in your work consider including the citation of this publication.
 
+```
 @misc{caso2026subtgraphlargescalesubterraneanenvironment,
       title={SubTGraph: Large-Scale Subterranean Environment Synthesis with Controllable Topological Variability for Robotic Autonomy Validation}, 
       author={F. Labra Caso and A. Saradagi and S. Fredriksson and S. Nordström and A. Koval and G. Nikolakopoulos},
@@ -24,6 +25,7 @@ If you use SubTGraph in your work consider including the citation of this public
       primaryClass={cs.RO},
       url={https://arxiv.org/abs/2605.20917}, 
 }
+```
 
 ## Installation
 The repository can be installed as a standalone Python package or deployed as a Docker container.
