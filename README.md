@@ -11,6 +11,20 @@ This is the code repository of SubTGraph, a subterranean world generator for sta
 
 A benchmark dataset with 50 worlds of each designed environment configuration is released with this code repository. This dataset is available at the branch *benchmark* and each world can be individually downloaded or directly pulled with Git LFS.
 
+## Citation
+
+If you use SubTGraph in your work consider including the citation of this publication.
+
+@misc{caso2026subtgraphlargescalesubterraneanenvironment,
+      title={SubTGraph: Large-Scale Subterranean Environment Synthesis with Controllable Topological Variability for Robotic Autonomy Validation}, 
+      author={F. Labra Caso and A. Saradagi and S. Fredriksson and S. Nordström and A. Koval and G. Nikolakopoulos},
+      year={2026},
+      eprint={2605.20917},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2605.20917}, 
+}
+
 ## Installation
 The repository can be installed as a standalone Python package or deployed as a Docker container.
 
@@ -210,5 +224,3 @@ texture_striated_rock: 'StriatedRock_Natural.jpg'
 <p align="center">
   <img src="imgs/figure8.jpg" style="width:100%; height:auto;"/>
 </p>
-
-## Citation
