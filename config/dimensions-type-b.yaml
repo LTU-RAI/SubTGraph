@@ -3,22 +3,27 @@ folder: "type_b"
 cave_3_way_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cave3way"
+  axis: [1, 2, -2, -3]
 
 cave_4_way_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cave4way"
+  axis: [1, -1, 2, -2, -3]
 
 cave_cap_type_b:
   pos: [0.0, 0.0, 0.0]
   name: "cavecap"
+  axis: [2]
 
 cave_corner_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavecorner01"
+  axis: [1, 2, -3]
 
 cave_corner_02_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavecorner02"
+  axis: [1, 2, -3]
 
 cave_elevation_type_b:
   pos: [40.0, 40.0, 32.0]
@@ -27,22 +32,27 @@ cave_elevation_type_b:
 cave_straight_01_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavestraight01"
+  axis: [1, -1, -3]
 
 cave_straight_02_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavestraight02"
+  axis: [1, -1, -3]
 
 cave_straight_03_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavestraight03"
+  axis: [1, -1, -3]
 
 cave_straight_04_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavestraight04"
+  axis: [1, -1, -3]
 
 cave_straight_05_type_b:
   pos: [40.0, 40.0, 0.0]
   name: "cavestraight05"
+  axis: [1, -1, -3]
 
 cave_vertical_shaft_type_b:
   pos: [40.0, 40.0, 64.0]

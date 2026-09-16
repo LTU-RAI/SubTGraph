@@ -1,7 +1,185 @@
-import os, bpy, yaml, shutil
+import os, bpy, yaml, shutil, math, random, heapq, numpy as np
 
 from utils import *
 from graph.shape import *
+
+###
+
+BBOX_TOLERANCE = 0.5
+rng = np.random.default_rng(config["generation_seed"])
+
+def distort_blender_object(obj, seed, cluster_count=6,
+    displacement_min=10.0, displacement_max=15.0,
+    smooth_iterations=5, smooth_strength=0.5,
+    bbox_axes=(), bbox_tolerance=0.5):
+    """Cluster vertices, translate uniformly along random vector, and smooth the displacement field."""
+
+    if "CaveWall" not in obj.name: return
+
+    mesh = obj.data
+    vertices = mesh.vertices
+
+    if len(vertices) == 0:
+        return
+
+    original = np.asarray([vertex.co[:] for vertex in vertices], dtype=float)
+
+    # Build a weighted graph from Blender mesh edges.
+    graph = [dict() for _ in vertices]
+
+    for edge in mesh.edges:
+        a, b = edge.vertices
+
+        edge_length = max(float(np.linalg.norm(original[a] - original[b])), 1e-12)
+
+        graph[a][b] = min(graph[a].get(b, math.inf), edge_length)
+        graph[b][a] = min(graph[b].get(a, math.inf), edge_length)
+
+    graph = [list(neighbors.items()) for neighbors in graph]
+
+    # Lock connector vertices on the selected bounding-box axes.
+    minimum = original.min(axis=0)
+    maximum = original.max(axis=0)
+
+    positive_axes = []
+    negative_axes = []
+
+    for ax in list(bbox_axes):
+        if ax > 0: positive_axes.append(ax-1)
+        if ax < 0: negative_axes.append(abs(ax)-1)
+
+    positive_check = False if len(positive_axes) == 0 else (maximum[positive_axes] - original[:, positive_axes] <= bbox_tolerance)
+    negative_check = False if len(negative_axes) == 0 else (original[:, negative_axes] - minimum[negative_axes] <= bbox_tolerance)
+
+    locked = np.zeros(original.shape[0], dtype=bool)
+    if positive_axes:
+        locked |= np.any(maximum[positive_axes] - original[:, positive_axes] <= bbox_tolerance, axis=1)
+
+    if negative_axes:
+        locked |= np.any(original[:, negative_axes] - minimum[negative_axes] <= bbox_tolerance, axis=1)
+
+    candidates = np.flatnonzero(~locked)
+    if len(candidates) == 0:  return
+
+    def distances_from(start_vertices):
+        """Geodesic distances from one or more mesh vertices."""
+        distances = np.full(len(vertices), np.inf)
+        queue = []
+
+        for start in start_vertices:
+            start = int(start)
+            distances[start] = 0.0
+            heapq.heappush(queue, (0.0, start))
+
+        while queue:
+            distance, vertex_index = heapq.heappop(queue)
+
+            if distance != distances[vertex_index]:  continue
+
+            for neighbor, edge_length in graph[vertex_index]:
+                candidate_distance = distance + edge_length
+
+                if candidate_distance < distances[neighbor]:
+                    distances[neighbor] = candidate_distance
+                    heapq.heappush(queue, (candidate_distance, neighbor))
+
+        return distances
+
+    local_rng = random.Random(seed)
+
+    # Select evenly distributed cluster seeds using geodesic farthest-point sampling.
+    number_of_clusters = min(cluster_count, len(candidates))
+
+    seeds = [int(local_rng.choice(candidates))]
+    nearest_seed_distance = distances_from(seeds)
+
+    while len(seeds) < number_of_clusters:
+        remaining = np.setdiff1d(candidates, seeds)
+
+        if len(remaining) == 0:  break
+
+        remaining_distances = nearest_seed_distance[remaining]
+
+        next_seed = int(remaining[np.argmax(remaining_distances)])
+        seeds.append(next_seed)
+        nearest_seed_distance = np.minimum(nearest_seed_distance, distances_from([next_seed]))
+
+    # Assign each vertex to its closest cluster seed using a multi-source Dijkstra traversal.
+    labels = np.full(len(vertices), -1, dtype=int)
+    distances = np.full(len(vertices), np.inf)
+    queue = []
+
+    for label, seed_vertex in enumerate(seeds):
+        labels[seed_vertex] = label
+        distances[seed_vertex] = 0.0
+
+        heapq.heappush(queue, (0.0, label, seed_vertex))
+
+    while queue:
+        distance, label, vertex_index = heapq.heappop(queue)
+
+        if (distance != distances[vertex_index] or label != labels[vertex_index]):
+            continue
+
+        for neighbor, edge_length in graph[vertex_index]:
+            candidate_distance = distance + edge_length
+
+            if candidate_distance < distances[neighbor]:
+                distances[neighbor] = candidate_distance
+                labels[neighbor] = label
+
+                heapq.heappush(queue, (candidate_distance, label, neighbor))
+
+    # Generate one uniform translation vector per cluster.
+    cluster_vectors = np.zeros((len(seeds), 3))
+
+    for cluster_index in range(len(seeds)):
+        direction = np.array(
+            [
+                local_rng.gauss(0.0, 1.0),
+                local_rng.gauss(0.0, 1.0),
+                local_rng.gauss(0.0, 1.0),  # 0.0
+            ],
+            dtype=float,
+        )
+
+        direction_length = np.linalg.norm(direction)
+        if direction_length <= 1e-12:  direction = np.array([1.0, 0.0, 0.0])
+        else:                          direction /= direction_length
+
+        magnitude = local_rng.uniform(displacement_min, displacement_max) * (-1 if np.random.random() > 0.5 else 1)
+        cluster_vectors[cluster_index] = (direction * magnitude)
+
+    # Apply the same vector to every vertex in a cluster.
+    displacement = np.zeros_like(original)
+
+    movable = ((~locked) & (labels >= 0))
+    displacement[movable] = cluster_vectors[labels[movable]]
+
+    # Smooth the displacement field instead of the mesh positions.
+    # This blends cluster boundaries without shrinking the mesh.
+    for _ in range(smooth_iterations):
+        previous = displacement.copy()
+
+        for vertex_index, neighbors in enumerate(graph):
+            if locked[vertex_index] or not neighbors:
+                continue
+
+            neighbor_indices = [neighbor for neighbor, _ in neighbors]
+            neighbor_mean = previous[neighbor_indices].mean(axis=0)
+            displacement[vertex_index] = ((1.0 - smooth_strength) * previous[vertex_index] + smooth_strength * neighbor_mean)
+
+        displacement[locked] = 0.0
+
+    distorted = original + displacement
+
+    # Ensure connector vertices remain exactly unchanged.
+    distorted[locked] = original[locked]
+
+    for vertex, coordinate in zip(vertices, distorted):
+        vertex.co = coordinate
+
+    mesh.update()
 
 ###
 
@@ -358,6 +536,9 @@ class FactoryObj():
             # Remove internal objects if their textures are not specified by the user
             if "RockPile" in obj.name and config['texture_rock_pile'] == '':             bpy.data.objects.remove(obj);  continue
             if "StriatedRock" in obj.name  and config['texture_striated_rock'] == '':    bpy.data.objects.remove(obj);  continue
+
+            if config["generation_distort_mesh"]:
+                distort_blender_object(obj, int(rng.integers(0,1000000)), bbox_axes=(*self.dimensions[asset_type]['axis'],))
 
             obj.location.x += base_offsetx
             obj.location.y += base_offsety
