@@ -30,7 +30,7 @@ If you use SubTGraph in your work consider including the citation of this public
 ## Presentation Video
 
 <p align="center">
-  <a href="https://youtu.be/_YUZt_LqooU?si=djLeATK-10nPOimH"><img width="844" height="470" alt="image" src="https://github.com/user-attachments/assets/d7e37b85-134d-4a11-8145-4dfcd850d438" /></a>
+  <a href="https://youtu.be/_YUZt_LqooU?si=djLeATK-10nPOimH"><img width="844" height="470" alt="image" src="https://github.com/user-attachments/assets/7814c853-74bb-481f-a9c3-8eba54056840" /></a>
 </p>
 
 ## Installation
