@@ -1,10 +1,20 @@
 import os, bpy, math
 import mathutils
 
+def clear_scene():
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
+
+    for _ in range(3):
+        try:
+            bpy.ops.outliner.orphans_purge(do_recursive=True)
+        except Exception:
+            pass
+
 # ---------------------
 # Configuration
 # ---------------------
-path = "/home/fernand0labra/rai-subtgraph/data/benchmark/lavatube"  # Change to your desired path
+path = "benchmark/lavatube"  # Change to your desired path
 
 for dir in os.listdir(path):
 
@@ -98,7 +108,7 @@ for dir in os.listdir(path):
     scene.use_nodes = True
     scene.render.resolution_x = math.ceil(width_m)
     scene.render.resolution_y = math.ceil(height_m)
-    scene.render.resolution_percentage = 100
+    scene.render.resolution_percentage = 50
 
     # ---------------------
     # Set render engine and output
@@ -111,3 +121,5 @@ for dir in os.listdir(path):
     # ---------------------
     bpy.ops.render.render(write_still=True)
     print(f"Map saved to {scene.render.filepath}")
+
+    clear_scene()
