@@ -11,7 +11,7 @@ This is the code repository of SubTGraph, a subterranean world generator for sta
 
 ## Benchmark Dataset
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24267373.svg)](https://doi.org/10.5281/zenodo.24267373)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24191984.svg)](https://doi.org/10.5281/zenodo.24191984)
 
 A benchmark dataset with 25 worlds of each designed environment configuration is released with this code repository. This dataset is available at [Zenodo](https://doi.org/10.5281/zenodo.24191984). The metadata for reproducing the environments along with a visual render map is included at the branch *benchmark*.
 
