@@ -183,10 +183,10 @@ class GridMap():
                 else:
 
                     # Obtain parameters from configuration file
-                    corner_params       = config["env_asset_list_type_b"]["corner"]["parameters"].split(',')
-                    straight_params     = config["env_asset_list_type_b"]["straight"]["parameters"].split(',')
-                    junction_params     = config["env_asset_list_type_b"]["junction"]["parameters"].split(',')
-                    intersection_params = config["env_asset_list_type_b"]["intersection"]["parameters"].split(',')
+                    corner_params       = config["env_asset_list"]["corner"]["parameters"].split(',')
+                    straight_params     = config["env_asset_list"]["straight"]["parameters"].split(',')
+                    junction_params     = config["env_asset_list"]["junction"]["parameters"].split(',')
+                    intersection_params = config["env_asset_list"]["intersection"]["parameters"].split(',')
 
                     # Equal operator, it is satisifed with exactly the given value
 

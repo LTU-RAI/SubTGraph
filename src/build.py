@@ -194,10 +194,10 @@ class FactoryObj():
         self.shaftOffset = [0.0, 0.0, 0.0]  # Offset of shaft tile
 
         # Dict with selection of available assets to spawn
-        self.env_asset_dict = config['env_asset_list_type_a'] if config['generation_tile_type'] == 'a' else config['env_asset_list_type_b']
+        self.env_asset_dict = config['env_asset_list']
         
         # Dict with dimensions of assets for selected type
-        with open(SUBTGRAPH_PATH + ('/config/dimensions-type-a.yaml' if config['generation_tile_type'] == 'a' else '/config/dimensions-type-b.yaml'), 'r') as file:
+        with open('data/dimensions.yaml', 'r') as file:
             self.dimensions = yaml.safe_load(file)
 
     def get_material(self, material_name: str, material_path: str, folder_path: str):
@@ -220,13 +220,13 @@ class FactoryObj():
         """
 
         # Create texture folder if not existing in generation folder
-        if not os.path.exists(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder_path, "textures")):
-            os.mkdir(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder_path, "textures"))
+        if not os.path.exists(os.path.join(config["generation_save_folder"], folder_path, "textures")):
+            os.mkdir(os.path.join(config["generation_save_folder"], folder_path, "textures"))
 
         # Copy texture image to generation folder if not exists
         texture = material_path.split('/')[-1]
-        if not os.path.exists(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder_path, "textures", texture)):
-            shutil.copy(material_path, os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder_path, "textures", texture))
+        if not os.path.exists(os.path.join(config["generation_save_folder"], folder_path, "textures", texture)):
+            shutil.copy(material_path, os.path.join(config["generation_save_folder"], folder_path, "textures", texture))
 
         material = bpy.data.materials.new(name=material_name)
         material.use_nodes = True  # Enable node-based materials
@@ -234,7 +234,7 @@ class FactoryObj():
         # Create an image texture node
         nodes = material.node_tree.nodes
         texture_node = nodes.new(type='ShaderNodeTexImage')
-        texture_node.image = bpy.data.images.load(os.path.join(SUBTGRAPH_PATH, config["generation_save_folder"], folder_path, "textures", texture))
+        texture_node.image = bpy.data.images.load(os.path.join(config["generation_save_folder"], folder_path, "textures", texture))
 
         # Connect the texture node to the Principled BSDF shader
         principled_shader = nodes.get("Principled BSDF")
@@ -331,7 +331,7 @@ class FactoryObj():
         if connection_type != "shaft_aux":  # All but destination shaft are imported (shaft_aux is a logical placeholder)
 
             # Import .obj asset
-            obj_path = os.path.join(SUBTGRAPH_PATH, config['asset_path'], self.dimensions["folder"].replace('_', ' '), asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
+            obj_path = os.path.join('data/assets', asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
             try:    bpy.ops.wm.obj_import(filepath=obj_path)
             except: print("Error importing object: " + obj_path);  return
 
@@ -378,7 +378,7 @@ class FactoryObj():
 
             # Import .obj asset accordingly to the type
             asset_type = "cave_cap_type_b" if asset_type.split('_')[-1] == 'b' else "cave_cap_type_a"
-            obj_path = os.path.join(SUBTGRAPH_PATH, config['asset_path'], self.dimensions["folder"].replace('_', ' '), asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
+            obj_path = os.path.join('data/assets', asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
             try:    bpy.ops.wm.obj_import(filepath=obj_path)
             except: print("Error importing object: " + obj_path);  return
 
@@ -523,7 +523,7 @@ class FactoryObj():
         asset_type = self.env_asset_dict[connection_type]["assets"][np.random.randint(0, len(self.env_asset_dict[connection_type]["assets"]))]
 
         # Import .obj asset
-        obj_path = os.path.join(SUBTGRAPH_PATH, config['asset_path'], self.dimensions["folder"].replace('_', ' '), asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
+        obj_path = os.path.join('data/assets', asset_type.replace('_', ' '), self.dimensions[asset_type]['name'] + '.obj')
         try:    bpy.ops.wm.obj_import(filepath=obj_path)
         except: print("Error importing object: " + obj_path);  return
 
@@ -537,8 +537,8 @@ class FactoryObj():
             if "RockPile" in obj.name and config['texture_rock_pile'] == '':             bpy.data.objects.remove(obj);  continue
             if "StriatedRock" in obj.name  and config['texture_striated_rock'] == '':    bpy.data.objects.remove(obj);  continue
 
-            if config["generation_distort_mesh"]:
-                distort_blender_object(obj, int(rng.integers(0,1000000)), bbox_axes=(*self.dimensions[asset_type]['axis'],))
+            # if config["generation_distort_mesh"]:
+            #     distort_blender_object(obj, int(rng.integers(0,1000000)), bbox_axes=(*self.dimensions[asset_type]['axis'],))
 
             obj.location.x += base_offsetx
             obj.location.y += base_offsety
@@ -656,15 +656,15 @@ class FactoryObj():
 
         # Add materials based on user specificationsn
         materials = {}
-        materials.update({"CaveWall":   self.get_material("CaveWall_Albedo", SUBTGRAPH_PATH + '/assets/textures/' + config['texture_cave_wall'], folder_path)})
-        materials.update({"Gravel":     self.get_material("CaveWall_Albedo", SUBTGRAPH_PATH + '/assets/textures/' + config['texture_cave_wall'], folder_path)})
-        materials.update({"Cap":        self.get_material("CaveWall_Albedo", SUBTGRAPH_PATH + '/assets/textures/' + config['texture_cave_wall'], folder_path)})
+        materials.update({"CaveWall":   self.get_material("CaveWall_Albedo", 'data/textures/' + config['texture_cave_wall'], folder_path)})
+        materials.update({"Gravel":     self.get_material("CaveWall_Albedo", 'data/textures/' + config['texture_cave_wall'], folder_path)})
+        materials.update({"Cap":        self.get_material("CaveWall_Albedo", 'data/textures/' + config['texture_cave_wall'], folder_path)})
 
         if config['texture_rock_pile'] != '':
-            materials.update({"RockPile": self.get_material("RockPile_Albedo", SUBTGRAPH_PATH + '/assets/textures/' + config['texture_rock_pile'], folder_path)})
+            materials.update({"RockPile": self.get_material("RockPile_Albedo", 'data/textures/' + config['texture_rock_pile'], folder_path)})
 
         if config['texture_striated_rock'] != '':
-            materials.update({"StriatedRock": self.get_material("StriatedRock_Albedo", SUBTGRAPH_PATH + '/assets/textures/' + config['texture_striated_rock'], folder_path)})
+            materials.update({"StriatedRock": self.get_material("StriatedRock_Albedo", 'data/textures/' + config['texture_striated_rock'], folder_path)})
 
         # List of objects to assign the material to
         objects_to_assign = [obj for obj in self.imported_objects if obj.type == 'MESH']

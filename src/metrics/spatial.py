@@ -12,11 +12,11 @@ def list_and_unpickle(directory: str, matrix_type: str):
     data_array = []
 
     for dir in dir_array:
-        files = os.listdir(os.path.join(directory, dir, 'pkl'))
+        files = os.listdir(os.path.join(directory, dir, '.metadata'))
         pickle_files = [f for f in files if f.endswith(matrix_type + '.pkl')]
         
         for pkl_file in pickle_files:
-            file_path = os.path.join(directory, dir, 'pkl', pkl_file)
+            file_path = os.path.join(directory, dir, '.metadata', pkl_file)
             with open(file_path, 'rb') as file:
                 try:                    data_array.append(pickle.load(file))
                 except Exception as e:  pass
@@ -57,7 +57,7 @@ if False:  # Symmetry vs. asymmetry: Higher asymmetry may correlate with more â€
         iou_symmetry_vert = 0
         iou_rotation = 0
 
-        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/' + repo, 'structural')
+        data = list_and_unpickle('data/benchmark/' + repo, 'structural')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
@@ -106,7 +106,7 @@ if False:  # Topological diversity: Count and type of spaces (e.g., rooms, corri
         histogram = {}
         for value in value_types.keys():  histogram.update({value : []})
 
-        data = list_and_unpickle(SUBTGRAPH_PATH + '/data/benchmark/' + repo, 'spatial')
+        data = list_and_unpickle('data/benchmark/' + repo, 'spatial')
         for idx in range(len(data)):
             mat = torch.from_numpy(data[idx])
 
