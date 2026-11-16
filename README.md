@@ -5,11 +5,15 @@
   <img src="imgs/figure2.jpg" style="width:100%; height:auto;"/>
 </p>
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21025889.svg)](https://doi.org/10.5281/zenodo.21025889)
+
 This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
 
 ## Benchmark Dataset
 
-A benchmark dataset with 50 worlds of each designed environment configuration is released with this code repository. This dataset is available at the branch *benchmark* and each world can be individually downloaded or directly pulled with Git LFS.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24191984.svg)](https://doi.org/10.5281/zenodo.24191984)
+
+A benchmark dataset with 25 worlds of each designed environment configuration is released with this code repository. This dataset is available at [Zenodo](https://doi.org/10.5281/zenodo.24191984). The metadata for reproducing the environments along with a visual render map is included at the branch *benchmark*.
 
 ## Citation
 
@@ -30,7 +34,7 @@ If you use SubTGraph in your work consider including the citation of this public
 ## Presentation Video
 
 <p align="center">
-  <a href="https://youtu.be/_YUZt_LqooU?si=djLeATK-10nPOimH"><img width="844" height="470" alt="image" src="https://github.com/user-attachments/assets/7814c853-74bb-481f-a9c3-8eba54056840" /></a>
+  <a href="https://youtu.be/_YUZt_LqooU"><img width="844" height="470" alt="image" src="https://github.com/user-attachments/assets/d7e37b85-134d-4a11-8145-4dfcd850d438" /></a>
 </p>
 
 ## Installation
@@ -39,11 +43,8 @@ The repository can be installed as a standalone Python package or deployed as a 
 ### Python package
 This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
 ```
-# Clone repository
-cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
-
 # Install package
-cd ~/SubTGraph & python3 -m pip install -e .
+python3 -m pip install -e .
 pip install bpy==4.0.0 --extra-index-url https://download.blender.org/pypi/
 ```
 
@@ -54,10 +55,10 @@ Docker allows for any machine and operative system to execute this tool by simpl
 docker pull fernand0labra/rai-subtgraph:latest
 
 # Clone repository
-cd ~ & git clone --depth 1 https://github.com/fernand0labra/SubTGraph.git
+git clone https://github.com/LTU-RAI/SubTGraph.git
 
 # Start container "subtgraph"
-bash ~/rai-subtgraph/docker/docker.sh
+bash docker/docker.sh
 
 # Connect to container terminal
 docker exec -it subtgraph bash
@@ -74,12 +75,10 @@ The process starts by setting a group of topometric constraints, namely intersec
   <img src="imgs/figure3.png" style="width:100%; height:auto;"/>
 </p>
 
-The generation is started by running the following command. This process utilizes the user requirements to create an initial 2-dimensional topology, which is visualized in the user terminal. For optimal interaction, it is recommended that the terminal view is zoomed out to the maximum. Thereafter, the uses can choose whether to keep the current topology or generate a new one. This prompt is given per desired number of levels. Once all topologies have been accepted, the process instantiates the world mesh.
+The generation is started by running the following command. This process utilizes the user requirements to create an initial 2-dimensional topology, which is visualized in a pop-up window. Thereafter, the user can choose whether to keep the current topology or generate a new one. Each window is given per desired number of levels. Once all topologies have been accepted, the process instantiates the world mesh.
 
 ```
-cd src & python3 main.py
-...
->> Press enter to continue, or type 'x' to remake this level: (? User Input)
+python3 src/main.py
 ```
 
 The topology occupancy matrix is transformed into an object-level graph with each occupied tile being a speficic asset object e.g. corner, straight corridor, junction, etc. Finally, a recursive per-level association instantiates and offsets the mesh components from a list of available assets to create the final underground world.
@@ -90,20 +89,18 @@ The topology occupancy matrix is transformed into an object-level graph with eac
 
 
 ### User Configuration
-The generation process is governed by the user-specified YAML configuration under [*config/generation*](/config/generation/). Four configuration files are available to the user: Custom, natural, operational and lavatube configurations. To specify the desired configuration the following path has to be changed in [*src/utils.py*](/src/utils.py).
+The generation process is governed by the user-specified YAML configuration under [*config*](/config/). Four configuration files are available to the user: Custom, natural, operational and lavatube configurations. To specify the desired configuration the following path has to be changed in [*src/utils.py*](/src/utils.py).
 
 ```
 # src/utils.py
-with open('../config/generation/custom.yaml', 'r') as file:
+with open('../config/custom.yaml', 'r') as file:
     config = yaml.safe_load(file)
 ```
 
 The initial basic configuration that can be chosen in the YAML file is the random generation seed and the number of worlds that want to be generated. The repository path needs to be updated to the folder where this repository has been cloned.
 
 ```
-# config/generation/custom.yaml
-
-repository_path: '/home/fernand0labra/SubTGraph'   ### !!! UPDATE WITH YOUR PATH!!!
+# config/custom.yaml
 
 generation_seed: 11
 generation_n_worlds: 1
@@ -112,7 +109,7 @@ generation_n_worlds: 1
 #### Level Visualization & Selection
 During the generation at each level, the user can define the following flag to visualize in the terminal the topology that has been randomly created and choose whether to keep or remake it. Three examples of terminal printed topologies are shown below.
 ```
-# config/generation/custom.yaml
+# config/custom.yaml
 
 generation_level_control: True
 ```
@@ -122,16 +119,12 @@ generation_level_control: True
 
 
 #### Asset Selection
-This repository uses mesh assets from the [DARPA SubT World Challenge](https://subtchallenge.gazebosim.org/home). In a similar fashion as their [World Generator](https://github.com/osrf/subt/wiki/World-Creation-Tutorial), this tool utilizes **anastomotic (type 'a')** or **rectilinear (type 'b')** meshes. For each connection type (node, corner, junction, etc.) a selected subset has been considered and within this selection, the user can comment the specific meshes that should not be used. In this way, the controllability of the appearance of the mesh is allowed.
+This repository uses mesh assets from the [DARPA SubT World Challenge](https://subtchallenge.gazebosim.org/home). In a similar fashion as their [World Generator](https://github.com/osrf/subt/wiki/World-Creation-Tutorial), this tool utilizes **rectilinear (type 'b')** meshes. For each connection type (node, corner, junction, etc.) a selected subset has been considered and within this selection, the user can comment the specific meshes that should not be used. In this way, the controllability of the appearance of the mesh is allowed.
 
 ```
 # config/generation/custom.yaml
 
-generation_tile_type: 'b'
-
-env_asset_list_type_a:
-  ...
-env_asset_list_type_b:
+env_asset_list:
   node: 
     parameters: 'node'
     assets: [
@@ -156,25 +149,13 @@ env_asset_list_type_b:
 ```
 
 #### Mesh Storage & Reconstruction
-The generation produces an .obj mesh together with three matrices describing the topology of the world, one of them being the visitation. The user can choose whether the .obj mesh should be built or not with the flag **generation_save_mesh**. In this way, the user can store the world as a matrix of 0s and 1s instead of a triangulated mesh of several GBs. 
+The generation produces an .obj mesh together with three matrices describing the topology of the world, one of them being the visitation. The world can be reconstructed onto an .obj mesh by indicating the folder where it is located **generation_load_folder** and the flag **generation_load_matrix**.
 
-The world can be then reconstructed onto an .obj mesh by indicating the folder where it is located **generation_save_folder** and the flags **generation_load_matrix**, **generation_save_mesh**. If the user only wants to visualize the world, set **generation_save_mesh** to False and **generation_level_control** to True.
-
-It is also possible to not save the matrices with **generation_save_matrix**, but this would mean that only the mesh could be saved and no reconstruction can be performed.
 ```
 # config/generation/custom.yaml
 
-generation_save_folder: 'data'
 generation_load_folder: 'data/subtgraph_2025-07-28_14-31-05'
-
-## generation_load_matrix + generation_level_control -> Visualize topology of world
-## generation_load_matrix + generation_save_mesh     -> Reconstruct .obj mesh
-## generation_save_matrix + generation_save_mesh     -> Save both matrix and .obj mesh
-
-generation_load_matrix: False    # Loading visitation matrix from generation_load_folder
-
-generation_save_matrix: True     # Saving topology matrices
-generation_save_mesh: True       # Saving .obj mesh
+generation_load_matrix: False  # Loading visitation matrix from generation_load_folder
 ```
 
 #### Constraint Definition
