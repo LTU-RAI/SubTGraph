@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SubTGraph: Large-Scale Subterranean Environment Synthesis with Controllable Topological Variability for Robotic Autonomy Validation.">
+  <title>SubTGraph</title>
+  <style>
+    :root {
+      --ink: #222;
+      --muted: #555;
+      --link: #1769aa;
+      --rule: #e5e5e5;
+      --page: 1250px;
+      --logo-ltu-width: 130px;
+      --logo-rai-size: 250px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #fff;
+      font: 16px/1.65 Arial, Helvetica, sans-serif;
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .page { width: min(var(--page), calc(100% - 36px)); margin: 0 auto; }
+    header { padding: 0 0 0; text-align: center; }
+    .logos {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      margin-bottom: 0px;
+    }
+    .logos a { display: inline-flex; align-items: center; justify-content: center; }
+    .logo-ltu { display: block; width: var(--logo-ltu-width); height: auto; }
+    .logo-rai { display: block; width: var(--logo-rai-size); height: var(--logo-rai-size); object-fit: contain; }
+    h1 {
+      max-width: 820px;
+      margin: 0 auto 1px;
+      font-size: clamp(30px, 4.6vw, 43px);
+      font-weight: 600;
+      line-height: 1.18;
+      letter-spacing: -.035em;
+    }
+    .authors { margin: 0; font-size: 17px; text-align: center; }
+    .affiliation { margin: 5px 0 0; color: var(--muted); font-size: 15px; text-align: center; }
+    .links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 21px; font-size: 15px; }
+    .links a {
+      display: inline-block;
+      padding: 6px 13px;
+      border: 1px solid #d5dce0;
+      border-radius: 5px;
+      color: var(--link);
+      background: #fff;
+      white-space: nowrap;
+      transition: background-color .15s ease, border-color .15s ease;
+    }
+    .links a:hover { border-color: #b7c8d3; background: #f6f9fb; text-decoration: none; }
+    .links a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+    main { padding-bottom: 1px; }
+    .teaser { margin: 0 0 0; }
+    .teaser img, figure img { display: block; width: 100%; height: auto; }
+    section { margin-top: 35px; scroll-margin-top: 20px; }
+    h2 { margin: 0 0 12px; font-size: 23px; font-weight: 600; }
+    p { margin: 0 0 14px; text-align: justify; }
+    figure { margin: 20px 0 0; }
+    figcaption { margin-top: 7px; color: #666; text-align: center; font-size: 13px; }
+    .video { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #f4f4f4; }
+    .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .dataset { padding-top: 4px; }
+    pre {
+      overflow-x: auto;
+      margin: 0x 0 0;
+      padding: 0px;
+      border: 1px solid var(--rule);
+      background: #f7f7f7;
+      color: #333;
+      font: 13px/1.5 Consolas, Monaco, monospace;
+      text-align: left;
+    }
+    .copy { margin-top: 9px; padding: 6px 10px; border: 1px solid #ccc; border-radius: 3px; background: #fff; color: #333; font: inherit; font-size: 13px; cursor: pointer; }
+    footer { padding: 18px 0 26px; border-top: 1px solid var(--rule); color: #666; font-size: 13px; text-align: center; }
+    @media (max-width: 600px) {
+      :root { --logo-ltu-width: 106px; --logo-rai-size: 45px; }
+      header { padding-top: 28px; }
+      .logos { margin-bottom: 20px; }
+      h1 { font-size: 31px; }
+      .authors { font-size: 15px; }
+      .links { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page" id="top">
+    <div class="logos" aria-label="Affiliated institutions">
+      <a href="https://www.ltu.se/" aria-label="Luleå University of Technology">
+        <img class="logo-ltu" src="imgs/logos/ltu.webp" alt="Luleå University of Technology">
+      </a>
+      <a href="https://github.com/LTU-RAI" aria-label="LTU Robotics and AI Group">
+        <img class="logo-rai" src="imgs/logos/rai.png" alt="LTU Robotics and AI Group logo">
+      </a>
+    </div>
+
+    <div class="teaser">
+      <img src="imgs/figure1.png" alt="SubTGraph simulation overview" onerror="this.hidden=true; this.nextElementSibling.hidden=false">
+    </div>
+    <p class="authors">Fernando Labra Caso, Akshit Saradagi, George Nikolakopoulos</p>
+    <p class="affiliation">Robotics and AI, Luleå University of Technology</p>
+    <nav class="links" aria-label="Project links">
+      <a href="https://github.com/LTU-RAI/SubTGraph">GitHub</a>
+      <a href="https://doi.org/10.5281/zenodo.21025889">Software</a>
+      <a href="https://doi.org/10.5281/zenodo.24191984">Dataset</a>
+      <a href="https://youtu.be/_YUZt_LqooU">Video</a>
+      <a href="#citation">BibTeX</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <p>Subterranean (SubT) environments have been a frontier for autonomous robotics, driven by the push for automation of mining operations and the interest in planetary exploration (Martian Lava Tubes). Due to the challenges involved in accessing real SubT environments, rigorous hardening of autonomy stacks in realistic simulation environments is critical. This article fills a well-known gap, which relates to the unavailability of a large-scale simulation-based benchmarking infrastructure for rigorous statistical evaluation of robotic autonomy, due to which it is common for SubT research articles to present validation results in a few environments at best. This article presents SubTGraph, a novel framework for rapid synthesis of multi-level SubT environments with high variability, incorporating user specifications related to topology, dimensionality, textures, etc., to generate distinct environments such as operational mines, natural caves and lava tubes. SubTGraph builds a cost matrix from user-specified structural constraints to guide the classical Dijkstra algorithm to procedurally generate SubT worlds utilizing topometric tiles from the DARPA World Generator. The SubTGraph world creation codebase is open-sourced along with a database consisting of 75 highly variable underground worlds.</p>
+    </section>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>SubTGraph is a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.</p>
+      <p><a href="https://doi.org/10.5281/zenodo.21025889">Download the software from Zenodo</a></p>
+      <figure>
+        <img src="imgs/figure3.png" alt="SubtGraph subterranean generation visualization" onerror="this.hidden=true; this.nextElementSibling.hidden=false">
+      </figure>
+    </section>
+
+    <section class="dataset" id="dataset">
+      <h2>Benchmark dataset</h2>
+      <p>The benchmark includes 75 worlds from operational, natural and lava tube environments.</p>
+      <p><a href="https://doi.org/10.5281/zenodo.24191984">Download the benchmark dataset from Zenodo</a></p>
+      <figure>
+        <img src="imgs/figure2.jpg" alt="SubTGraph generated examples visualization" onerror="this.hidden=true; this.nextElementSibling.hidden=false">
+      </figure>
+    </section>
+
+    <section id="citation">
+      <h2>Citation</h2>
+      <p>If you use SubTGraph in your work, consider including the citation of this publication.</p>
+      <pre id="bibtex"><code>@misc{caso2026subtgraphlargescalesubterraneanenvironment,
+      title={SubTGraph: Large-Scale Subterranean Environment Synthesis with Controllable Topological Variability for Robotic Autonomy Validation}, 
+      author={F. Labra Caso and A. Saradagi and S. Fredriksson and S. Nordström and A. Koval and G. Nikolakopoulos},
+      year={2026},
+      eprint={2605.20917},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2605.20917}, 
+}</code></pre>
+      <button class="copy" id="copy-citation" type="button">Copy BibTeX</button>
+    </section>
+  </main>
+
+  <footer><div class="page">Robotics and AI · Luleå University of Technology · <a href="https://github.com/LTU-RAI/SubTGraph">SubTGraph on GitHub</a></div></footer>
+  <script>
+    document.getElementById('copy-citation').addEventListener('click', async () => {
+      const button = document.getElementById('copy-citation');
+      try {
+        await navigator.clipboard.writeText(document.querySelector('#bibtex code').innerText);
+        button.textContent = 'Copied';
+        setTimeout(() => button.textContent = 'Copy BibTeX', 1600);
+      } catch {
+        button.textContent = 'Select the BibTeX to copy';
+      }
+    });
+  </script>
+</body>
+</html>
