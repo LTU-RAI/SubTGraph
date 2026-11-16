@@ -1,24 +1,13 @@
 # ****************************************************************************************************************
-# !!! PATH TO REPOSITORY !!!
-
-repository_path: '/home/fernand0labra/SubTGraph'
-
-# ****************************************************************************************************************
 # Spatial description of the environment
 
 generation_seed: 11
 
 generation_save_folder: 'data'
-generation_load_folder: 'data/subtgraph_2025-07-28_14-31-05'
-
+generation_load_folder: 'data/subtgraph_2026-11-16_00-51-36'
 generation_load_matrix: False
-generation_save_matrix: True
-generation_save_mesh: True
-
-generation_distort_mesh: True
 
 generation_n_worlds: 1
-generation_tile_type: 'b'
 generation_level_control: True
 
 generation_topology: 'sine'
@@ -27,19 +16,10 @@ generation_route_harmonic: -1
 world_max_width:  [40, 50]
 world_min_length: [3000, 5000]
 
-world_n_levels: [5, 5]                          
+world_n_levels: [2, 2]                          
 world_n_loops_per_level: [0, 0]                   
 world_n_tjunctions_per_level: [1, 3]           
 world_n_intersections_per_level: [0, 1]         
-
-
-# ****************************************************************************************************************
-# Repository paths
-
-asset_path: '/home/fernand0labra/SubTGraph/assets/subt/'
-
-darpa_dimensions_type_a: '/home/fernand0labra/SubTGraph/config/dimensions-type-a.yaml'
-darpa_dimensions_type_b: '/home/fernand0labra/SubTGraph/config/dimensions-type-b.yaml'
 
 
 # ****************************************************************************************************************
@@ -53,49 +33,7 @@ texture_striated_rock: 'CaveWall_LavaTube.png'
 # ****************************************************************************************************************
 # Node names and descriptions
 
-env_asset_list_type_a:
-  node: 
-    parameters: 'node'
-    assets: [
-      "cave_corner_01_type_a",
-      "cave_corner_03_type_a",
-    ]
-
-  corner:       
-    parameters: 'corner,e,s'
-    assets: [
-      "cave_corner_01_type_a",
-      "cave_corner_03_type_a",
-    ]
-
-  straight:     
-    parameters: 'straight,e,w'
-    assets: [
-      "cave_split_type_a",
-      "cave_straight_type_a",
-    ]
-
-  shaft: 
-    parameters: 'shaft,e,n,s,w'
-    assets: [
-      "cave_elevation_straight_type_a",
-      "cave_elevation_02_type_a"
-    ]
-
-  junction:     
-    parameters: 'junction,e,n,s'
-    assets: [
-      "cave_3_way_type_a"
-    ]
-
-  intersection: 
-    parameters: 'intersection,e,n,s,w'
-    assets: [
-      "cave_4_way_01_type_a",
-    ]
-
-
-env_asset_list_type_b:
+env_asset_list:
   node: 
     parameters: 'node'
     assets: [
