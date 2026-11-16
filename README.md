@@ -5,7 +5,7 @@
   <img src="imgs/figure2.jpg" style="width:100%; height:auto;"/>
 </p>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21025889.svg)](https://doi.org/10.5281/zenodo.21025889)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24267373.svg)](https://doi.org/10.5281/zenodo.24267373)
 
 This is the code repository of SubTGraph, a subterranean world generator for statistical evaluation of robotic techniques. This tool is governed by the user-specified configuration that allows the creation of object meshes with different levels, topologies, textures, widths and lengths.
 
