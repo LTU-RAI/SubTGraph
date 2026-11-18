@@ -40,7 +40,7 @@ If you use SubTGraph in your work consider including the citation of this public
 ## Installation
 The repository can be installed as a standalone Python package or deployed as a Docker container.
 
-### Python package
+### Python package (Python 3.10)
 This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
 ```
 # Install package
