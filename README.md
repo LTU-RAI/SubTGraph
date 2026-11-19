@@ -42,8 +42,10 @@ The repository can be installed as a standalone Python package or deployed as a 
 
 ### Python package (Python 3.10)
 This method of installation allows the user to work in a Python environment by simply installing the package. The definition of the package includes all required dependencies that the code utilizes.
+
 ```
-# Install package
+sudo apt install libxml2-dev libxslt1-dev python3-dev build-essential
+
 python3 -m pip install -e .
 pip install bpy==4.0.0 --extra-index-url https://download.blender.org/pypi/
 ```
